@@ -165,10 +165,6 @@ public class MainActivityWear extends Activity implements
 
     }
 
-    public enum MessageContent {
-        NEW_RANT;
-    }
-
     @Override
     //When data has been received from the phone
     public void onDataChanged(DataEventBuffer dataEvents) {
@@ -178,9 +174,9 @@ public class MainActivityWear extends Activity implements
 
             String eventUri = event.getDataItem().getUri().toString();
 
-            if (eventUri.contains (MessageContent.NEW_RANT.name())) {
+            if (eventUri.contains ("/wear-path")) {
 
-                DataMapItem dataItem = DataMapItem.fromDataItem (event.getDataItem());
+                DataMapItem dataItem = DataMapItem.fromDataItem(event.getDataItem());
                 String data[] = dataItem.getDataMap().getStringArray("contents");
 
                 displayCard(data);

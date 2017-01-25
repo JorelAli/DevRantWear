@@ -26,10 +26,6 @@ import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
 
 public class ListenerServiceFromWear extends WearableListenerService {
 
-    public enum MessageContent {
-        NEW_RANT;
-    }
-
     public static final String LOG_TAG = "DevRantWear (Device)";
 
     private static final String WEARPATH = "/from-wear";
@@ -55,13 +51,13 @@ public class ListenerServiceFromWear extends WearableListenerService {
             Log.d(LOG_TAG, "Found a rant!");
             Log.d(LOG_TAG, "Rant: " + rant);
 
-            sendToWatch(MessageContent.NEW_RANT, rant);
+            sendToWatch(rant);
 
         }
     }
 
-    private void sendToWatch(MessageContent c, String[] contents) {
-        new DataTask(c, contents).execute();
+    private void sendToWatch(String[] contents) {
+        new DataTask(contents).execute();
     }
 
     private String[] getRandomRant() {
@@ -95,17 +91,15 @@ public class ListenerServiceFromWear extends WearableListenerService {
 class DataTask extends AsyncTask<Node, Void, Void> {
 
     private final String[] contents;
-    private final ListenerServiceFromWear.MessageContent c;
 
-    public DataTask (ListenerServiceFromWear.MessageContent c, String[] contents) {
-        this.c = c;
+    public DataTask (String[] contents) {
         this.contents = contents;
     }
 
     @Override
     protected Void doInBackground(Node... nodes) {
 
-        PutDataMapRequest dataMap = PutDataMapRequest.create(c.name());
+        PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
         dataMap.getDataMap().putStringArray("contents", contents);
 
         PutDataRequest request = dataMap.asPutDataRequest();
