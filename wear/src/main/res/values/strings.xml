@@ -3,4 +3,5 @@
     <string name="hello_round">Hello Round World!</string>
     <string name="hello_square">Hello Square World!</string>
     <string name="card_title">devRant</string>
+    <string name="new_rant">Request new rant</string>
 </resources>

@@ -84,7 +84,7 @@ public class MainActivityWear extends Activity implements
 
     //Actions to perform once connected to the phone
     private void onceConnected() {
-        sendMessage("Sending message to phone");
+        sendMessage("Requesting Rant");
     }
 
     //Sends a message to the phone (Requesting Rant)
@@ -147,18 +147,16 @@ public class MainActivityWear extends Activity implements
         gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
             @Override
             public Fragment getFragment(int row, int col) {
-                Log.d(LOG_TAG, "Row: " + row);
-                Log.d(LOG_TAG, "Col:" + col);
                 switch(col) {
                     case 0:
                         String title = contents[0];
                         String content = contents[1];
                         return CardFragment.create(title, content);
                     case 1:
-                        return ActionFragment.create(R.drawable.ic_cc_checkmark, R.string.app_name, new ActionFragment.Listener() {
+                        return ActionFragment.create(R.drawable.ic_cc_checkmark, R.string.new_rant, new ActionFragment.Listener() {
                             @Override
                             public void onActionPerformed() {
-
+                                onceConnected();
                             }
                         });
                     default:

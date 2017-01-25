@@ -38,7 +38,7 @@ public class ListenerServiceFromWear extends WearableListenerService {
 
         if(messageEvent.getPath().equals(WEARPATH)) {
             String data = new String(messageEvent.getData());
-            Log.d(LOG_TAG, data);
+            Log.d(LOG_TAG, "Received message: " + data);
 
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
