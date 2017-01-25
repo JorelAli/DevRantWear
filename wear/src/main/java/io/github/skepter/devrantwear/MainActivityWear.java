@@ -2,22 +2,14 @@ package io.github.skepter.devrantwear;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.Notification;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
-import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,21 +23,11 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-import com.scorpiac.javarant.DevRant;
-import com.scorpiac.javarant.Rant;
-import com.scorpiac.javarant.Sort;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
-
-import static com.google.android.gms.wearable.DataMap.TAG;
-
-public class MainActivityWear extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, DataApi.DataListener {
-
-    private TextView mTextView;
+public class MainActivityWear extends Activity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        DataApi.DataListener {
 
     private void log(String m) {
         Log.i(this.getClass().getName(), m);
@@ -69,60 +51,11 @@ public class MainActivityWear extends Activity implements GoogleApiClient.Connec
                 .addOnConnectionFailedListener(this)
                 .build();
 
-
-        //Rant[] rants = DevRant.getRants(Sort.ALGO, 1, 0);
-//        Rant randomRant = DevRant.surprise();
-//
-//        FragmentManager manager = getFragmentManager();
-//        FragmentTransaction transaction = manager.beginTransaction();
-//        CardFragment fragment = CardFragment.create(getString(R.string.card_title), randomRant.getContent());
-//        transaction.add(R.id.frame_layout, fragment);
-//        transaction.commit();
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        //your codes here
-
-//        log("Looking for rant...");
-//        String rant = randomRant();
-//        //Rant randomRant = DevRant.surprise();
-//        log("Found a rant!");
-//        log("Rant: " + rant);
-//        //log("Rant info:" + randomRant.getContent());
-//
-//        FragmentManager manager = getFragmentManager();
-//        FragmentTransaction transaction = manager.beginTransaction();
-//        CardFragment fragment = CardFragment.create(getString(R.string.card_title), rant);
-//        //CardFragment fragment = CardFragment.create(getString(R.string.card_title), randomRant.getContent());
-//        transaction.add(R.id.frame_layout, fragment);
-//        transaction.commit();
-
     }
-//
-//    private String randomRant() {
-//        HttpURLConnection connection;
-//        InputStream inputStream;
-//        String out = "";
-//
-//        try {
-//            // Create the URL and connection, get the input stream.
-//            connection = (HttpURLConnection) new URL("https://www.devrant.io/api/devrant/rants/surprise?app=3").openConnection();
-//            inputStream = connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream();
-//            Scanner s = new Scanner(inputStream).useDelimiter("\\A");
-//            String result = s.hasNext() ? s.next() : "";
-//            s.close();
-//            //System.out.println(result);
-//            out = result.substring(result.indexOf("text\":\""), result.indexOf("\",\"num_upvotes")).substring(7);
-//            out = out.replace("\\n", "\n");
-//            inputStream.close();
-//            connection.disconnect();
-//        } catch (IOException i) {
-//            i.printStackTrace();
-//        }
-//        return out;
-//    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

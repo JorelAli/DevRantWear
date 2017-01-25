@@ -1,10 +1,8 @@
 package io.github.skepter.devrantwear;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.MessageEvent;
