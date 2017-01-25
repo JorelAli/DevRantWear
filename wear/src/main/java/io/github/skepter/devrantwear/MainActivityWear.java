@@ -10,7 +10,6 @@ import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,7 +32,7 @@ public class MainActivityWear extends Activity implements
         Log.i(this.getClass().getName(), m);
     }
 
-    public static final String WEARABLE_MAIN = "WearableMain";
+    public static final String LOG_TAG = "DevRantWear (Wear)";
 
     private Node mNode;
     private GoogleApiClient mGoogleApiClient;
@@ -45,12 +44,14 @@ public class MainActivityWear extends Activity implements
         setContentView(R.layout.activity_main_wear);
         log("Starting application!");
 
+        //Builds the Google API Client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        //Allows Networking? (This might be unnecessary for the wear class)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -58,6 +59,7 @@ public class MainActivityWear extends Activity implements
     }
 
     @Override
+    //Once connected to the phone
     public void onConnected(@Nullable Bundle bundle) {
         Wearable.DataApi.addListener(mGoogleApiClient, this);
 
@@ -67,22 +69,25 @@ public class MainActivityWear extends Activity implements
                     public void onResult(@NonNull NodeApi.GetConnectedNodesResult nodes) {
                         for(Node node : nodes.getNodes()) {
                             if(node != null && node.isNearby()) {
+                                //The name of the device connected (phone's Identifier)
                                 mNode = node;
-                                Log.d(WEARABLE_MAIN, "Connected to " + mNode.getDisplayName());
+                                Log.d(LOG_TAG, "Connected to " + mNode.getDisplayName());
                                 onceConnected();
                             }
                         }
                         if(mNode == null) {
-                            Log.d(WEARABLE_MAIN, "Not connected");
+                            Log.d(LOG_TAG, "Not connected");
                         }
                     }
                 });
     }
 
+    //Actions to perform once connected to the phone
     private void onceConnected() {
         sendMessage("Sending message to phone");
     }
 
+    //Sends a message to the phone (Requesting Rant)
     private void sendMessage(String s) {
         if(mNode != null && mGoogleApiClient != null) {
             Wearable.MessageApi.sendMessage(mGoogleApiClient, mNode.getId(), WEAR_PATH, s.getBytes())
@@ -90,9 +95,9 @@ public class MainActivityWear extends Activity implements
                         @Override
                         public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
                             if(!sendMessageResult.getStatus().isSuccess()) {
-                                Log.d(WEARABLE_MAIN, "Failed message: " + sendMessageResult.getStatus().getStatusCode());
+                                Log.d(LOG_TAG, "Failed message: " + sendMessageResult.getStatus().getStatusCode());
                             } else {
-                                Log.d(WEARABLE_MAIN, "Message succeeded");
+                                Log.d(LOG_TAG, "Message succeeded");
                             }
                         }
                     });
@@ -113,7 +118,6 @@ public class MainActivityWear extends Activity implements
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
-
     }
 
     @Override
@@ -122,12 +126,22 @@ public class MainActivityWear extends Activity implements
         mGoogleApiClient.disconnect();
     }
 
+    //displays the rant
     private void displayCard(String[] contents) {
 //        FragmentManager manager = getFragmentManager();
 //        FragmentTransaction transaction = manager.beginTransaction();
 //        CardFragment fragment = CardFragment.create(getString(R.string.card_title), data);
 //        transaction.add(R.id.frame_layout, fragment);
 //        transaction.commit();
+
+        /*
+        Planned design for grid:
+
+        [rant] [Comments] [+ button to request new rant]
+               [Comments]
+               [Comments]
+               [Comments]
+         */
 
         GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
         gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
@@ -151,16 +165,20 @@ public class MainActivityWear extends Activity implements
 
     }
 
+    public enum MessageContent {
+        NEW_RANT;
+    }
+
     @Override
+    //When data has been received from the phone
     public void onDataChanged(DataEventBuffer dataEvents) {
         for (DataEvent event: dataEvents) {
 
-            Log.d("[DEBUG] onDataChanged",
-                    "Event received: " + event.getDataItem().getUri());
+            Log.d(LOG_TAG, "Event received: " + event.getDataItem().getUri());
 
             String eventUri = event.getDataItem().getUri().toString();
 
-            if (eventUri.contains ("/myapp/myevent")) {
+            if (eventUri.contains (MessageContent.NEW_RANT.name())) {
 
                 DataMapItem dataItem = DataMapItem.fromDataItem (event.getDataItem());
                 String data[] = dataItem.getDataMap().getStringArray("contents");
@@ -168,7 +186,7 @@ public class MainActivityWear extends Activity implements
                 displayCard(data);
 
 
-                Log.d("[DEBUG] onDataChanged", "Sending timeline to the listener");
+                Log.d(LOG_TAG, "Sending timeline to the listener");
             }
         }
     }

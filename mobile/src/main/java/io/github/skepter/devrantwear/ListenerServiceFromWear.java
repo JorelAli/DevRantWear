@@ -24,37 +24,47 @@ import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
  * Created by Jorel on 24/01/2017.
  */
 
-public class ListenerServiceFromWear extends WearableListenerService{
+public class ListenerServiceFromWear extends WearableListenerService {
+
+    public enum MessageContent {
+        NEW_RANT;
+    }
+
+    public static final String LOG_TAG = "DevRantWear (Device)";
 
     private static final String WEARPATH = "/from-wear";
 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-        Log.d("HI", "I received a message!");
+        Log.d(LOG_TAG, "I received a message!");
 
 
         if(messageEvent.getPath().equals(WEARPATH)) {
             String data = new String(messageEvent.getData());
-            Log.d("HI", data);
+            Log.d(LOG_TAG, data);
 
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                     .permitAll().build();
             StrictMode.setThreadPolicy(policy);
 
-            Log.d("HI", "Looking for rant...");
-            String[] rant = randomRant();
+            Log.d(LOG_TAG, "Looking for rant...");
+            String[] rant = getRandomRant();
 
-            Log.d("HI", "Found a rant!");
-            Log.d("HI", "Rant: " + rant);
+            Log.d(LOG_TAG, "Found a rant!");
+            Log.d(LOG_TAG, "Rant: " + rant);
 
-            new DataTask(rant).execute();
+            sendToWatch(MessageContent.NEW_RANT, rant);
 
         }
     }
 
-    private String[] randomRant() {
+    private void sendToWatch(MessageContent c, String[] contents) {
+        new DataTask(c, contents).execute();
+    }
+
+    private String[] getRandomRant() {
         HttpURLConnection connection;
         InputStream inputStream;
         String rantID = "";
@@ -68,6 +78,8 @@ public class ListenerServiceFromWear extends WearableListenerService{
             String result = s.hasNext() ? s.next() : "";
             s.close();
             //System.out.println(result);
+
+            //Terrible parsing going on here (Use GSON FOR GOODNESS SAKE!!!)
             rantID = result.substring(result.indexOf("\"id\":"), result.indexOf(",\"text")).substring(5);
             rantContent = result.substring(result.indexOf("text\":\""), result.indexOf("\",\"num_upvotes")).substring(7);
             rantContent = rantContent.replace("\\n", "\n");
@@ -80,18 +92,20 @@ public class ListenerServiceFromWear extends WearableListenerService{
     }
 }
 
-class DataTask  extends AsyncTask<Node, Void, Void> {
+class DataTask extends AsyncTask<Node, Void, Void> {
 
     private final String[] contents;
+    private final ListenerServiceFromWear.MessageContent c;
 
-    public DataTask (String[] contents) {
+    public DataTask (ListenerServiceFromWear.MessageContent c, String[] contents) {
+        this.c = c;
         this.contents = contents;
     }
 
     @Override
     protected Void doInBackground(Node... nodes) {
 
-        PutDataMapRequest dataMap = PutDataMapRequest.create("/myapp/myevent");
+        PutDataMapRequest dataMap = PutDataMapRequest.create(c.name());
         dataMap.getDataMap().putStringArray("contents", contents);
 
         PutDataRequest request = dataMap.asPutDataRequest();
@@ -100,7 +114,8 @@ class DataTask  extends AsyncTask<Node, Void, Void> {
                 .putDataItem(googleApiClient, request).await();
 
 
-        Log.d ("[DEBUG]SendDataCoolTask", "/myapp/myevent+getStatus()");
+
+        Log.d (ListenerServiceFromWear.LOG_TAG, dataItemResult.getStatus().getStatusMessage());
         return null;
     }
 }

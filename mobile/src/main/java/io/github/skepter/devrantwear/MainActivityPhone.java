@@ -11,7 +11,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
 
-public class MainActivityPhone extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivityPhone extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     public static GoogleApiClient googleApiClient;
     public static Context myContext;
@@ -30,6 +32,9 @@ public class MainActivityPhone extends AppCompatActivity implements GoogleApiCli
                 .build();
 
         googleApiClient.connect();
+
+        //TODO Add some kind of feature to let the user login
+        //(Used to ++ and -- rants)
 
     }
 
