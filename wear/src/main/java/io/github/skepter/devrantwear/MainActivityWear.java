@@ -153,7 +153,7 @@ public class MainActivityWear extends Activity implements
                         String content = contents[1];
                         return CardFragment.create(title, content);
                     case 1:
-                        return ActionFragment.create(R.drawable.ic_cc_checkmark, R.string.new_rant, new ActionFragment.Listener() {
+                        return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
                             @Override
                             public void onActionPerformed() {
                                 onceConnected();
