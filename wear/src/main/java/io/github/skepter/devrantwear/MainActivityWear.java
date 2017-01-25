@@ -147,29 +147,35 @@ public class MainActivityWear extends Activity implements
         gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
             @Override
             public Fragment getFragment(int row, int col) {
-                if(row == 1) {
-                    String title = contents[0];
-                    String content = contents[1];
-                    return CardFragment.create(title, content);
-                } else if(row == 2) {
-                    return ActionFragment.create(R.drawable.ic_cc_checkmark, R.string.app_name, new ActionFragment.Listener() {
-                        @Override
-                        public void onActionPerformed() {
+                Log.d(LOG_TAG, "Row: " + row);
+                Log.d(LOG_TAG, "Col:" + col);
+                switch(col) {
+                    case 0:
+                        String title = contents[0];
+                        String content = contents[1];
+                        return CardFragment.create(title, content);
+                    case 1:
+                        return ActionFragment.create(R.drawable.ic_cc_checkmark, R.string.app_name, new ActionFragment.Listener() {
+                            @Override
+                            public void onActionPerformed() {
 
-                        }
-                    });
+                            }
+                        });
+                    default:
+                        String title1 = contents[0];
+                        String content1 = contents[1];
+                        return CardFragment.create(title1, content1);
                 }
-                return null;
             }
 
             @Override
             public int getRowCount() {
-                return 2;
+                return 1;
             }
 
             @Override
             public int getColumnCount(int rowNum) {
-                return 1;
+                return 2;
             }
         });
 
