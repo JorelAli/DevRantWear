@@ -27,6 +27,11 @@ public class ImageFragment extends Fragment {
     public static ImageFragment create(byte[] img) {
         ImageFragment fragment = new ImageFragment();
         Bundle args = new Bundle();
+        if(img == null) {
+            args.putBoolean("NO_IMAGE", true);
+        } else {
+            args.putBoolean("NO_IMAGE", false);
+        }
         args.putByteArray("IMG", img);
         fragment.setArguments(args);
         return fragment;
@@ -39,11 +44,15 @@ public class ImageFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View view, Bundle bundle) {
+        super.onViewCreated(view, bundle);
         ImageView v = (ImageView) view.findViewById(R.id.imageView);
 
-        byte[] imgRaw = savedInstanceState.getByteArray("IMG");
+        if(getArguments().getBoolean("NO_IMAGE")) {
+            return;
+        }
+
+        byte[] imgRaw = getArguments().getByteArray("IMG");
         Bitmap image = null;
         try {
             if(imgRaw.length != 0) {

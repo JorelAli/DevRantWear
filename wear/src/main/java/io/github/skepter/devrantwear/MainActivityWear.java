@@ -211,8 +211,6 @@ public class MainActivityWear extends Activity implements
                 String[] data = new String[] {rantID, rantContent};
                 displayCard(data, imgRaw);
 
-
-                Log.d(LOG_TAG, "Sending timeline to the listener");
             }
         }
     }

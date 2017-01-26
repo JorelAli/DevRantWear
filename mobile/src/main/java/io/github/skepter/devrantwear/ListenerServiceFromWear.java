@@ -96,7 +96,7 @@ public class ListenerServiceFromWear extends WearableListenerService {
             Scanner s = new Scanner(inputStream).useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
             s.close();
-            //System.out.println(result);
+            Log.d(LOG_TAG, "Rant received: " + result);
 
             //Terrible parsing going on here (Use GSON FOR GOODNESS SAKE!!!)
             rantID = result.substring(result.indexOf("\"id\":"), result.indexOf(",\"text")).substring(5);
