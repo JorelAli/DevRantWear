@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
@@ -49,7 +50,7 @@ public class ListenerServiceFromWear extends WearableListenerService {
             String[] rant = getRandomRant();
 
             Log.d(LOG_TAG, "Found a rant!");
-            Log.d(LOG_TAG, "Rant: " + rant);
+            Log.d(LOG_TAG, "Rant: " + Arrays.toString(rant));
 
             sendToWatch(rant);
 
