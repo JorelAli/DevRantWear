@@ -34,10 +34,6 @@ public class MainActivityWear extends Activity implements
         GoogleApiClient.OnConnectionFailedListener,
         DataApi.DataListener {
 
-    private void log(String m) {
-        Log.i(this.getClass().getName(), m);
-    }
-
     public static final String LOG_TAG = "DevRantWear (Wear)";
 
     private Node mNode;
@@ -48,7 +44,7 @@ public class MainActivityWear extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_wear);
-        log("Starting application!");
+        Log.d(LOG_TAG, "Starting application!");
 
         //Builds the Google API Client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
