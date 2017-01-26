@@ -1,5 +1,7 @@
 package io.github.skepter.devrantwear;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
@@ -12,6 +14,7 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -19,6 +22,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static android.R.attr.bitmap;
 import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
 
 /**
@@ -47,7 +51,7 @@ public class ListenerServiceFromWear extends WearableListenerService {
             StrictMode.setThreadPolicy(policy);
 
             Log.d(LOG_TAG, "Looking for rant...");
-            String[] rant = getRandomRant();
+            Object[] rant = getRandomRant();
 
             Log.d(LOG_TAG, "Found a rant!");
             Log.d(LOG_TAG, "Rant: " + Arrays.toString(rant));
@@ -57,15 +61,33 @@ public class ListenerServiceFromWear extends WearableListenerService {
         }
     }
 
-    private void sendToWatch(String[] contents) {
+    private void sendToWatch(Object[] contents) {
         new DataTask(contents).execute();
     }
 
-    private String[] getRandomRant() {
+    public Bitmap getBitmapFromURL(String src) {
+        try {
+            java.net.URL url = new java.net.URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url
+                    .openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Object[] getRandomRant() {
         HttpURLConnection connection;
         InputStream inputStream;
         String rantID = "";
         String rantContent = "";
+        String rantImageURL = "";
+        Bitmap image = null;
 
         try {
             // Create the URL and connection, get the input stream.
@@ -78,22 +100,32 @@ public class ListenerServiceFromWear extends WearableListenerService {
 
             //Terrible parsing going on here (Use GSON FOR GOODNESS SAKE!!!)
             rantID = result.substring(result.indexOf("\"id\":"), result.indexOf(",\"text")).substring(5);
-            rantContent = result.substring(result.indexOf("text\":\""), result.indexOf("\",\"num_upvotes")).substring(7);
             rantContent = rantContent.replace("\\n", "\n");
+            rantContent = rantContent.replace("\\", "");
+            rantContent = result.substring(result.indexOf("text\":\""), result.indexOf("\",\"num_upvotes")).substring(7);
+
+            if(result.contains("\"attached_image\":\"\",\"num_comments")) {
+                rantImageURL = null;
+            } else {
+                rantImageURL = result.substring(result.indexOf("{\"url\":\""), result.indexOf("\",\"width\"")).substring(8);
+                image = getBitmapFromURL(rantImageURL);
+                rantContent = rantContent + "\n\nSee image below";
+            }
+
             inputStream.close();
             connection.disconnect();
         } catch (IOException i) {
             i.printStackTrace();
         }
-        return new String[] {rantID, rantContent};
+        return new Object[] {rantID, rantContent, image};
     }
 }
 
 class DataTask extends AsyncTask<Node, Void, Void> {
 
-    private final String[] contents;
+    private final Object[] contents;
 
-    public DataTask (String[] contents) {
+    public DataTask (Object[] contents) {
         this.contents = contents;
     }
 
@@ -101,7 +133,18 @@ class DataTask extends AsyncTask<Node, Void, Void> {
     protected Void doInBackground(Node... nodes) {
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
-        dataMap.getDataMap().putStringArray("contents", contents);
+        dataMap.getDataMap().putString("rantID", String.valueOf(contents[0]));
+        dataMap.getDataMap().putString("rantContent", String.valueOf(contents[1]));
+        if(contents[2] != null) {
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            Bitmap img = (Bitmap) contents[2];
+            img.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+            dataMap.getDataMap().putByteArray("bitmapImage", byteStream.toByteArray());
+        } else {
+            dataMap.getDataMap().putByteArray("bitmapImage", new byte[] {});
+        }
+//        dataMap.getDataMap().putString("rantID", String.valueOf(contents[0]));
+//        dataMap.getDataMap().putStringArray("contents", contents);
 
         PutDataRequest request = dataMap.asPutDataRequest();
 

@@ -2,6 +2,8 @@ package io.github.skepter.devrantwear;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -14,6 +16,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
@@ -22,6 +25,9 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+
+import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivityWear extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -127,7 +133,7 @@ public class MainActivityWear extends Activity implements
     }
 
     //displays the rant
-    private void displayCard(String[] contents) {
+    private void displayCard(String[] contents, byte[] image) {
 //        FragmentManager manager = getFragmentManager();
 //        FragmentTransaction transaction = manager.beginTransaction();
 //        CardFragment fragment = CardFragment.create(getString(R.string.card_title), data);
@@ -149,9 +155,15 @@ public class MainActivityWear extends Activity implements
             public Fragment getFragment(int row, int col) {
                 switch(col) {
                     case 0:
-                        String title = contents[0];
-                        String content = contents[1];
-                        return CardFragment.create(title, content);
+                        switch (row) {
+                            case 0:
+                                String title = contents[0];
+                                String content = contents[1];
+                                return CardFragment.create(title, content);
+                            case 1:
+                                return ImageFragment.create(image);
+                        }
+
                     case 1:
                         return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
                             @Override
@@ -168,7 +180,7 @@ public class MainActivityWear extends Activity implements
 
             @Override
             public int getRowCount() {
-                return 1;
+                return 2;
             }
 
             @Override
@@ -191,9 +203,13 @@ public class MainActivityWear extends Activity implements
             if (eventUri.contains ("/wear-path")) {
 
                 DataMapItem dataItem = DataMapItem.fromDataItem(event.getDataItem());
-                String data[] = dataItem.getDataMap().getStringArray("contents");
+                String rantID = dataItem.getDataMap().getString("rantID");
+                String rantContent = dataItem.getDataMap().getString("rantContent");
+                byte[] imgRaw = dataItem.getDataMap().getByteArray("bitmapImage");
 
-                displayCard(data);
+
+                String[] data = new String[] {rantID, rantContent};
+                displayCard(data, imgRaw);
 
 
                 Log.d(LOG_TAG, "Sending timeline to the listener");
