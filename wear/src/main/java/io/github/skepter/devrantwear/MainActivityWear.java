@@ -149,45 +149,85 @@ public class MainActivityWear extends Activity implements
                [Comments]
          */
 
-        GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
-        gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
-            @Override
-            public Fragment getFragment(int row, int col) {
-                switch(col) {
-                    case 0:
-                        switch (row) {
-                            case 0:
-                                String title = contents[0];
-                                String content = contents[1];
-                                return CardFragment.create(title, content);
-                            case 1:
-                                return ImageFragment.create(image);
-                        }
-
-                    case 1:
-                        return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
-                            @Override
-                            public void onActionPerformed() {
-                                onceConnected();
+        if(image != null) {
+            GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
+            gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
+                @Override
+                public Fragment getFragment(int row, int col) {
+                    switch(col) {
+                        case 0:
+                            switch (row) {
+                                case 0:
+                                    String title = contents[0];
+                                    String content = contents[1];
+                                    return CardFragment.create(title, content);
+                                case 1:
+                                    return ImageFragment.create(image);
                             }
-                        });
-                    default:
-                        String title1 = contents[0];
-                        String content1 = contents[1];
-                        return CardFragment.create(title1, content1);
+
+                        case 1:
+                            return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
+                                @Override
+                                public void onActionPerformed() {
+                                    onceConnected();
+                                }
+                            });
+                        default:
+                            String title1 = contents[0];
+                            String content1 = contents[1];
+                            return CardFragment.create(title1, content1);
+                    }
                 }
-            }
 
-            @Override
-            public int getRowCount() {
-                return 2;
-            }
+                @Override
+                public int getRowCount() {
+                    return 2;
+                }
 
-            @Override
-            public int getColumnCount(int rowNum) {
-                return 2;
-            }
-        });
+                @Override
+                public int getColumnCount(int rowNum) {
+                    return 2;
+                }
+            });
+        } else {
+            GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
+            gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
+                @Override
+                public Fragment getFragment(int row, int col) {
+                    switch(col) {
+                        case 0:
+                            String title = contents[0];
+                            String content = contents[1];
+                            return CardFragment.create(title, content);
+                        case 1:
+                            return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
+                                @Override
+                                public void onActionPerformed() {
+                                    onceConnected();
+                                }
+                            });
+                        default:
+                            String title1 = contents[0];
+                            String content1 = contents[1];
+                            return CardFragment.create(title1, content1);
+                    }
+                }
+
+
+
+                @Override
+                public int getRowCount() {
+                    return 1;
+                }
+
+                @Override
+                public int getColumnCount(int rowNum) {
+                    return 1;
+                }
+            });
+        }
+
+
 
     }
 
