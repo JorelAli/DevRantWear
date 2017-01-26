@@ -108,6 +108,8 @@ public class ListenerServiceFromWear extends WearableListenerService {
                 rantImageURL = null;
             } else {
                 rantImageURL = result.substring(result.indexOf("{\"url\":\""), result.indexOf("\",\"width\"")).substring(8);
+                rantImageURL = rantImageURL.replace("\\/", "/");
+                Log.d(LOG_TAG, "Retrieving Image from: " + rantImageURL);
                 image = getBitmapFromURL(rantImageURL);
                 rantContent = rantContent + "\n\nSee image below";
             }
