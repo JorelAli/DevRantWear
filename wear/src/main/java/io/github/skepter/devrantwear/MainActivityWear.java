@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.wearable.view.CardFragment;
+import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
@@ -152,8 +153,11 @@ public class MainActivityWear extends Activity implements
                [Comments]
          */
 
+        DotsPageIndicator pages = new DotsPageIndicator(this);
         if(image != null) {
+
             GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
+            pages.setPager(gridViewPager);
             gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
                 @Override
                 public Fragment getFragment(int row, int col) {
@@ -194,6 +198,7 @@ public class MainActivityWear extends Activity implements
             });
         } else {
             GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
+            pages.setPager(gridViewPager);
             gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
                 @Override
                 public Fragment getFragment(int row, int col) {
