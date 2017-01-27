@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
+import android.support.wearable.view.GridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.util.Log;
 
@@ -57,6 +58,12 @@ public class MainActivityWear extends Activity implements
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
+        //TODO:
+        //Add something to say "yeah we're connected" or "nah, dunno where that phone is at fam"
+        //Loading spinny wheel icons?
+
+        //Start implementing comments
 
     }
 
