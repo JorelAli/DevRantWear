@@ -13,11 +13,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
-import java.util.Arrays;
 import java.util.List;
-
-import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
-import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.RawRant;
 
 public class MainActivityPhone extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,

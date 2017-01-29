@@ -1,14 +1,14 @@
 package io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant;
 
-import android.os.StrictMode;
 import android.util.Log;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
 
 /**
  * Created by Jorel on 28/01/2017.
@@ -26,7 +26,7 @@ not compatible with Android (unfortunately).
 public class DevRantAccessor {
 
 
-    public RawRant getRant() {
+    public Rant getRant() {
 
         HttpURLConnection connection;
         InputStream inputStream;
@@ -34,16 +34,21 @@ public class DevRantAccessor {
             Log.d("DevRantAccessor", "Retrieving rant...");
             connection = (HttpURLConnection) new URL("https://www.devrant.io/api/devrant/rants/surprise?app=3").openConnection();
             inputStream = connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream();
-            Scanner s = new Scanner(inputStream).useDelimiter("\\A");
-            String result = s.hasNext() ? s.next() : "";
-            s.close();
-            Log.d("DevRantAccessor", "Received raw rant: " + result);
-            result = result.replaceAll("\n", "\n");
-            result = result.replaceAll("\\\\", "");
-            Log.d("DevRantAccessor", "Parsed rant: " + result);
+//            Scanner s = new Scanner(inputStream).useDelimiter("\\A");
+//            String result = s.hasNext() ? s.next() : "";
+//            s.close();
+//            Log.d("DevRantAccessor", "Received raw rant: " + result);
+            JsonObject json = (new JsonParser().parse(new InputStreamReader(inputStream))).getAsJsonObject();
+            inputStream.close();
+            connection.disconnect();
+            return new Rant(json);
 
-            Gson gson = new Gson();
-            return gson.fromJson(result, RawRant.class);
+//            result = result.replaceAll("\n", "\n");
+//            result = result.replaceAll("\\\\", "");
+//            Log.d("DevRantAccessor", "Parsed rant: " + result);
+
+//            Gson gson = new Gson();
+//            return gson.fromJson(result, RawRant.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,9 +1,6 @@
 package io.github.skepter.devrantwear;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.StrictMode;
 import android.util.Log;
 
 import com.google.android.gms.wearable.DataApi;
@@ -14,18 +11,15 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
-import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.RawRant;
+import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.Rant;
 
-import static android.R.attr.bitmap;
 import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
 
 /**
@@ -49,7 +43,7 @@ public class ListenerServiceFromWear extends WearableListenerService {
             Log.d(LOG_TAG, "Received message: " + data);
 
             Log.d(LOG_TAG, "Looking for rant...");
-            RawRant rant = getRantFromAccessor();
+            Rant rant = getRantFromAccessor();
             sendToWatch(rant);
             //String[] rant = getRandomRant();
 
@@ -61,7 +55,7 @@ public class ListenerServiceFromWear extends WearableListenerService {
         }
     }
 
-    private void sendToWatch(RawRant rant) {
+    private void sendToWatch(Rant rant) {
         new DataTask(rant).execute();
     }
 
@@ -74,7 +68,7 @@ public class ListenerServiceFromWear extends WearableListenerService {
         }
     }
 
-    private RawRant getRantFromAccessor() {
+    private Rant getRantFromAccessor() {
         return new DevRantAccessor().getRant();
     }
 
@@ -114,9 +108,9 @@ public class ListenerServiceFromWear extends WearableListenerService {
 
 class DataTask extends AsyncTask<Node, Void, Void> {
 
-    private final RawRant rant;
+    private final Rant rant;
 
-    public DataTask (RawRant rant) {
+    public DataTask (Rant rant) {
         this.rant = rant;
     }
 
@@ -124,8 +118,8 @@ class DataTask extends AsyncTask<Node, Void, Void> {
     protected Void doInBackground(Node... nodes) {
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
-        dataMap.getDataMap().putString("rantID", String.valueOf(rant.getRant().getId()));
-        dataMap.getDataMap().putString("rantContent", rant.getRant().getText());
+        dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
+        dataMap.getDataMap().putString("rantContent", rant.getText());
 
         PutDataRequest request = dataMap.asPutDataRequest();
 
