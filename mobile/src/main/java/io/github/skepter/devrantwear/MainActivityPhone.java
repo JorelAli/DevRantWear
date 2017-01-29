@@ -39,9 +39,7 @@ public class MainActivityPhone extends AppCompatActivity implements
         setContentView(R.layout.activity_main_phone);
 
         myContext = this.getApplicationContext();
-
-        // ATTENTION: This "addApi(AppIndex.API)"was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
