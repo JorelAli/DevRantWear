@@ -48,12 +48,12 @@ public class ListenerServiceFromWear extends WearableListenerService {
             Log.d(LOG_TAG, "Received message: " + data);
 
 
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
+//            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+//                    .permitAll().build();
+//            StrictMode.setThreadPolicy(policy);
 
             Log.d(LOG_TAG, "Looking for rant...");
-            Object[] rant = getRandomRant();
+            String[] rant = getRandomRant();
 
             Log.d(LOG_TAG, "Found a rant!");
             Log.d(LOG_TAG, "Rant: " + Arrays.toString(rant));
@@ -63,24 +63,8 @@ public class ListenerServiceFromWear extends WearableListenerService {
         }
     }
 
-    private void sendToWatch(Object[] contents) {
+    private void sendToWatch(String[] contents) {
         new DataTask(contents).execute();
-    }
-
-    public Bitmap getBitmapFromURL(String src) {
-        try {
-            java.net.URL url = new java.net.URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void getComments(String rantID) {
@@ -92,13 +76,14 @@ public class ListenerServiceFromWear extends WearableListenerService {
         }
     }
 
-    private Object[] getRandomRant() {
+    /**
+    Returns [rantID, rant]
+     */
+    private String[] getRandomRant() {
         HttpURLConnection connection;
         InputStream inputStream;
         String rantID = "";
         String rantContent = "";
-        String rantImageURL = "";
-        Bitmap image = null;
 
         try {
             // Create the URL and connection, get the input stream.
@@ -115,30 +100,20 @@ public class ListenerServiceFromWear extends WearableListenerService {
             rantContent = rantContent.replace("\\", "");
             rantContent = result.substring(result.indexOf("text\":\""), result.indexOf("\",\"num_upvotes")).substring(7);
 
-            if(result.contains("\"attached_image\":\"\",\"num_comments")) {
-                rantImageURL = null;
-            } else {
-                rantImageURL = result.substring(result.indexOf("{\"url\":\""), result.indexOf("\",\"width\"")).substring(8);
-                rantImageURL = rantImageURL.replace("\\/", "/");
-                Log.d(LOG_TAG, "Retrieving Image from: " + rantImageURL);
-                image = getBitmapFromURL(rantImageURL);
-                rantContent = rantContent + "\n\nSee image below";
-            }
-
             inputStream.close();
             connection.disconnect();
         } catch (IOException i) {
             i.printStackTrace();
         }
-        return new Object[] {rantID, rantContent, image};
+        return new String[] {rantID, rantContent};
     }
 }
 
 class DataTask extends AsyncTask<Node, Void, Void> {
 
-    private final Object[] contents;
+    private final String[] contents;
 
-    public DataTask (Object[] contents) {
+    public DataTask (String[] contents) {
         this.contents = contents;
     }
 
@@ -148,23 +123,11 @@ class DataTask extends AsyncTask<Node, Void, Void> {
         PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
         dataMap.getDataMap().putString("rantID", String.valueOf(contents[0]));
         dataMap.getDataMap().putString("rantContent", String.valueOf(contents[1]));
-        if(contents[2] != null) {
-            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-            Bitmap img = Bitmap.createScaledBitmap((Bitmap) contents[2], 280, 280, false);
-            img.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
-            dataMap.getDataMap().putByteArray("bitmapImage", byteStream.toByteArray());
-        } else {
-            dataMap.getDataMap().putByteArray("bitmapImage", new byte[] {});
-        }
-//        dataMap.getDataMap().putString("rantID", String.valueOf(contents[0]));
-//        dataMap.getDataMap().putStringArray("contents", contents);
 
         PutDataRequest request = dataMap.asPutDataRequest();
 
         DataApi.DataItemResult dataItemResult = Wearable.DataApi
                 .putDataItem(googleApiClient, request).await();
-
-
 
         Log.d (ListenerServiceFromWear.LOG_TAG, dataItemResult.getStatus().getStatusMessage());
         return null;

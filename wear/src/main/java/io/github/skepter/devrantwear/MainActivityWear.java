@@ -2,26 +2,19 @@ package io.github.skepter.devrantwear;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.FragmentGridPagerAdapter;
-import android.support.wearable.view.GridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.text.Html;
-import android.text.Spannable;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
@@ -30,11 +23,6 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivityWear extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -86,7 +74,7 @@ public class MainActivityWear extends Activity implements
                                 //The name of the device connected (phone's Identifier)
                                 mNode = node;
                                 Log.d(LOG_TAG, "Connected to " + mNode.getDisplayName());
-                                onceConnected();
+                                requestRandomRant();
                             }
                         }
                         if(mNode == null) {
@@ -97,7 +85,7 @@ public class MainActivityWear extends Activity implements
     }
 
     //Actions to perform once connected to the phone
-    private void onceConnected() {
+    private void requestRandomRant() {
         sendMessage("Requesting Rant");
     }
 
@@ -109,9 +97,9 @@ public class MainActivityWear extends Activity implements
                         @Override
                         public void onResult(@NonNull MessageApi.SendMessageResult sendMessageResult) {
                             if(!sendMessageResult.getStatus().isSuccess()) {
-                                Log.d(LOG_TAG, "Failed message: " + sendMessageResult.getStatus().getStatusCode());
+                                Log.d(LOG_TAG, "Failed to send message to phone: " + sendMessageResult.getStatus().getStatusCode());
                             } else {
-                                Log.d(LOG_TAG, "Message succeeded");
+                                Log.d(LOG_TAG, "Message send to phone successfully");
                             }
                         }
                     });
@@ -141,7 +129,7 @@ public class MainActivityWear extends Activity implements
     }
 
     //displays the rant
-    private void displayCard(String[] contents, byte[] image) {
+    private void displayCard(String[] contents) {
 
         /*
         Planned design for grid:
@@ -153,88 +141,42 @@ public class MainActivityWear extends Activity implements
          */
 
         DotsPageIndicator pages = new DotsPageIndicator(this);
-        if(image != null && image.length != 0) {
-            Log.d(LOG_TAG, "Image present");
 
-            GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
-            pages.setPager(gridViewPager);
-            gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
-                @Override
-                public Fragment getFragment(int row, int col) {
-                    switch(col) {
-                        case 0:
-                            switch (row) {
-                                case 0:
-                                    String title = contents[0];
-                                    String content = contents[1];
-                                    return CardFragment.create(title, content);
-                                case 1:
-                                    return ImageFragment.create(image);
+        GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
+        pages.setPager(gridViewPager);
+        gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
+            @Override
+            public Fragment getFragment(int row, int col) {
+                switch(col) {
+                    case 0:
+                        String title = contents[0];
+                        //Testing to see if bold text renders properly in preparation for comment formatting
+                        String content = "<b>" + contents[1] + "</b>";
+                        return CardFragment.create(title, Html.fromHtml(content));
+                    case 1:
+                        return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
+                            @Override
+                            public void onActionPerformed() {
+                                requestRandomRant();
                             }
-
-                        case 1:
-                            return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
-                                @Override
-                                public void onActionPerformed() {
-                                    onceConnected();
-                                }
-                            });
-                        default:
-                            String title1 = contents[0];
-                            String content1 = "<b>" + contents[1] + "</b>";
-                            return CardFragment.create(title1, Html.fromHtml(content1));
-                    }
+                        });
+                    default:
+                        String title1 = contents[0];
+                        String content1 = "<b>" + contents[1] + "</b>";
+                        return CardFragment.create(title1, Html.fromHtml(content1));
                 }
+            }
 
-                @Override
-                public int getRowCount() {
-                    return 2;
-                }
+            @Override
+            public int getRowCount() {
+                return 1;
+            }
 
-                @Override
-                public int getColumnCount(int rowNum) {
-                    return 2;
-                }
-            });
-        } else {
-            Log.d(LOG_TAG, "Null image");
-            GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
-            pages.setPager(gridViewPager);
-            gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
-                @Override
-                public Fragment getFragment(int row, int col) {
-                    switch(col) {
-                        case 0:
-                            String title = contents[0];
-                            String content = "<b>HELLO</b> <b>" + contents[1] + "</b>";
-                            return CardFragment.create(title, Html.fromHtml(content));
-                        case 1:
-                            return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
-                                @Override
-                                public void onActionPerformed() {
-                                    onceConnected();
-                                }
-                            });
-                        default:
-                            String title1 = contents[0];
-                            String content1 = "<b>" + contents[1] + "</b>";
-                            return CardFragment.create(title1, Html.fromHtml(content1));
-                    }
-                }
-
-
-
-                @Override
-                public int getRowCount() {
-                    return 1;
-                }
-
-                @Override
-                public int getColumnCount(int rowNum) {
-                    return 2;
-                }
-            });
-        }
+            @Override
+            public int getColumnCount(int rowNum) {
+                return 2;
+            }
+        });
 
 
 
@@ -252,11 +194,10 @@ public class MainActivityWear extends Activity implements
                 DataMapItem dataItem = DataMapItem.fromDataItem(event.getDataItem());
                 String rantID = dataItem.getDataMap().getString("rantID");
                 String rantContent = dataItem.getDataMap().getString("rantContent");
-                byte[] imgRaw = dataItem.getDataMap().getByteArray("bitmapImage");
 
 
                 String[] data = new String[] {rantID, rantContent};
-                displayCard(data, imgRaw);
+                displayCard(data);
 
             }
         }

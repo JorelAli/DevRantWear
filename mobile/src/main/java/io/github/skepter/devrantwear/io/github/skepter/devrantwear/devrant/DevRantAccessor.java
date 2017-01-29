@@ -16,6 +16,7 @@ import java.util.Scanner;
 
 /*
 Some kind of class to access devRant
+
 JavaRant is available, but I would rather learn how to use
 GSON by myself now and then be able to apply it in the future.
 
