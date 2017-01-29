@@ -52,15 +52,6 @@ public class ListenerServiceFromWear extends WearableListenerService {
         new DataTask(rant).execute();
     }
 
-    private void getComments(String rantID) {
-        HttpURLConnection connection;
-        try {
-            connection = (HttpURLConnection) new URL("https://www.devrant.io/api/devrant/rants/" + rantID + "?app=3").openConnection();
-        } catch(Exception e) {
-
-        }
-    }
-
     private Rant getRantFromAccessor() {
         return new DevRantAccessor().getRant();
     }

@@ -56,5 +56,19 @@ public class DevRantAccessor {
 
     }
 
+    public void getComments(int rantID) {
+        HttpURLConnection connection;
+        InputStream inputStream;
+        try {
+            connection = (HttpURLConnection) new URL("https://www.devrant.io/api/devrant/rants/" + rantID + "?app=3").openConnection();
+            inputStream = connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream();
+            JsonObject json = (new JsonParser().parse(new InputStreamReader(inputStream))).getAsJsonObject();
+            inputStream.close();
+            connection.disconnect();
+        } catch(Exception e) {
+
+        }
+    }
+
 
 }
