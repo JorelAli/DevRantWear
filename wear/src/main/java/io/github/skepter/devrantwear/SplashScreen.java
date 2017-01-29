@@ -33,6 +33,7 @@ public class SplashScreen extends Activity {
     }
 
     private void initMainScreen() {
+
         Log.d("DevRantWear (Wear)", "Starting main activity");
         Intent intent = new Intent(this, MainActivityWear.class);
         startActivity(intent);
