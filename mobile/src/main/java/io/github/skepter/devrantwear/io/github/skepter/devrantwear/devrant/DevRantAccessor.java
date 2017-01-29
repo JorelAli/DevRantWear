@@ -2,6 +2,8 @@ package io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant;
 
 import android.util.Log;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -45,7 +47,7 @@ public class DevRantAccessor {
 
     }
 
-    public JsonObject getComments(int rantID) {
+    public Comment[] getComments(int rantID) {
         HttpURLConnection connection;
         InputStream inputStream;
         try {
@@ -54,7 +56,16 @@ public class DevRantAccessor {
             JsonObject json = (new JsonParser().parse(new InputStreamReader(inputStream))).getAsJsonObject();
             inputStream.close();
             connection.disconnect();
-            return json;
+
+
+            JsonArray comments = json.get("comments").getAsJsonArray();
+            Comment[] commentArray = new Comment[comments.size()];
+            int i = 0;
+            for (JsonElement ob : comments) {
+                commentArray[i] = new Comment(ob.getAsJsonObject());
+                i++;
+            }
+            return commentArray;
         } catch(Exception e) {
             e.printStackTrace();
         }

@@ -51,23 +51,6 @@ public class MainActivityPhone extends AppCompatActivity implements
         googleApiClient.connect();
 
         Log.d(TAG, "Application started!");
-
-        Log.d(TAG, "Preparing test for comments:");
-
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                JsonObject json = new DevRantAccessor().getComments(18023);
-                JsonArray comments = json.get("comments").getAsJsonArray();
-                for (JsonElement ob : comments) {
-                    JsonObject comment = ob.getAsJsonObject();
-                    Log.d(TAG, comment.get("user_username").getAsString() + ": " + comment.get("body").getAsString());
-                }
-            }
-        }).start();
-
-
     }
 
     private void check(final GoogleApiClient client) {
@@ -111,39 +94,4 @@ public class MainActivityPhone extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    public Action getIndexApiAction() {
-        Thing object = new Thing.Builder()
-                .setName("MainActivityPhone Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
-                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
-                .build();
-        return new Action.Builder(Action.TYPE_VIEW)
-                .setObject(object)
-                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
-                .build();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        googleApiClient.connect();
-        AppIndex.AppIndexApi.start(googleApiClient, getIndexApiAction());
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(googleApiClient, getIndexApiAction());
-        googleApiClient.disconnect();
-    }
 }
