@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            tools:text="Get new rant"
+            tools:text="@string/new_rant"
             android:id="@+id/label"
             android:fontFamily="sans-serif-condensed-light"
             android:textSize="20sp"

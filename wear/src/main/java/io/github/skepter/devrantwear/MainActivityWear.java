@@ -54,14 +54,9 @@ public class MainActivityWear extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        //This code might be unnecessary - but you know, it works with this... dunno if it works without
         bar = (ProgressBar) findViewById(R.id.progressBar);
         bar.setProgress(20);
-
-        //TODO:
-        //Add something to say "yeah we're connected" or "nah, dunno where that phone is at fam"
-        //Loading spinny wheel icons?
-
-        //Start implementing comments
 
     }
 
@@ -145,10 +140,8 @@ public class MainActivityWear extends Activity implements
                [Comments]
          */
 
-        DotsPageIndicator pages = new DotsPageIndicator(this);
 
         GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
-        pages.setPager(gridViewPager);
         gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
             @Override
             public Fragment getFragment(int row, int col) {
