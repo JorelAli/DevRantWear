@@ -14,6 +14,8 @@ import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
+import android.text.Html;
+import android.text.Spannable;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -140,11 +142,6 @@ public class MainActivityWear extends Activity implements
 
     //displays the rant
     private void displayCard(String[] contents, byte[] image) {
-//        FragmentManager manager = getFragmentManager();
-//        FragmentTransaction transaction = manager.beginTransaction();
-//        CardFragment fragment = CardFragment.create(getString(R.string.card_title), data);
-//        transaction.add(R.id.frame_layout, fragment);
-//        transaction.commit();
 
         /*
         Planned design for grid:
@@ -184,8 +181,8 @@ public class MainActivityWear extends Activity implements
                             });
                         default:
                             String title1 = contents[0];
-                            String content1 = contents[1];
-                            return CardFragment.create(title1, content1);
+                            String content1 = "<b>" + contents[1] + "</b>";
+                            return CardFragment.create(title1, Html.fromHtml(content1));
                     }
                 }
 
@@ -209,8 +206,8 @@ public class MainActivityWear extends Activity implements
                     switch(col) {
                         case 0:
                             String title = contents[0];
-                            String content = contents[1];
-                            return CardFragment.create(title, content);
+                            String content = "<b>HELLO</b> <b>" + contents[1] + "</b>";
+                            return CardFragment.create(title, Html.fromHtml(content));
                         case 1:
                             return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
                                 @Override
@@ -220,8 +217,8 @@ public class MainActivityWear extends Activity implements
                             });
                         default:
                             String title1 = contents[0];
-                            String content1 = contents[1];
-                            return CardFragment.create(title1, content1);
+                            String content1 = "<b>" + contents[1] + "</b>";
+                            return CardFragment.create(title1, Html.fromHtml(content1));
                     }
                 }
 
@@ -247,8 +244,6 @@ public class MainActivityWear extends Activity implements
     //When data has been received from the phone
     public void onDataChanged(DataEventBuffer dataEvents) {
         for (DataEvent event: dataEvents) {
-
-            Log.d(LOG_TAG, "Event received: " + event.getDataItem().getUri());
 
             String eventUri = event.getDataItem().getUri().toString();
 
