@@ -158,7 +158,8 @@ public class MainActivityWear extends Activity implements
          */
 
         DotsPageIndicator pages = new DotsPageIndicator(this);
-        if(image != null) {
+        if(image != null && image.length != 0) {
+            Log.d(LOG_TAG, "Image present");
 
             GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
             pages.setPager(gridViewPager);
@@ -201,6 +202,7 @@ public class MainActivityWear extends Activity implements
                 }
             });
         } else {
+            Log.d(LOG_TAG, "Null image");
             GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
             pages.setPager(gridViewPager);
             gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {

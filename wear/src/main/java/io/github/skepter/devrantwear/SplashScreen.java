@@ -3,6 +3,7 @@ package io.github.skepter.devrantwear;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -19,10 +20,20 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.splash_screen);
-        SystemClock.sleep(TimeUnit.SECONDS.toMillis(3));
+        Log.d("DevRantWear (Wear)", "Showing splash");
 
-        Log.d("DevRantWear (Wear)", "Showing splash and starting next activity");
+        new Handler().postDelayed(new Runnable() {
 
+            @Override
+            public void run() {
+                initMainScreen();
+            }
+        }, 2000);
+
+    }
+
+    private void initMainScreen() {
+        Log.d("DevRantWear (Wear)", "Starting main activity");
         Intent intent = new Intent(this, MainActivityWear.class);
         startActivity(intent);
         finish();
