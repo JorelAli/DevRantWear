@@ -40,7 +40,10 @@ public class DevRantAccessor {
             Scanner s = new Scanner(inputStream).useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
             s.close();
-            Log.d("DevRantAccessor", "Received rant: " + result);
+            Log.d("DevRantAccessor", "Received raw rant: " + result);
+            result = result.replaceAll("\n", "\n");
+            result = result.replaceAll("\\\\", "");
+            Log.d("DevRantAccessor", "Parsed rant: " + result);
 
             Gson gson = new Gson();
             return gson.fromJson(result, RawRant.class);
