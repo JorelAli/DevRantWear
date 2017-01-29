@@ -47,11 +47,6 @@ public class ListenerServiceFromWear extends WearableListenerService {
             String data = new String(messageEvent.getData());
             Log.d(LOG_TAG, "Received message: " + data);
 
-
-//            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-//                    .permitAll().build();
-//            StrictMode.setThreadPolicy(policy);
-
             Log.d(LOG_TAG, "Looking for rant...");
             String[] rant = getRandomRant();
 

@@ -149,7 +149,7 @@ public class MainActivityWear extends Activity implements
             public Fragment getFragment(int row, int col) {
                 switch(col) {
                     case 0:
-                        String title = contents[0];
+                        String title = "Rant ID: "+ contents[0];
                         //Testing to see if bold text renders properly in preparation for comment formatting
                         String content = "<b>" + contents[1] + "</b>";
                         return CardFragment.create(title, Html.fromHtml(content));
@@ -161,9 +161,9 @@ public class MainActivityWear extends Activity implements
                             }
                         });
                     default:
-                        String title1 = contents[0];
-                        String content1 = "<b>" + contents[1] + "</b>";
-                        return CardFragment.create(title1, Html.fromHtml(content1));
+                        //This case should never occur.
+                        Log.d(LOG_TAG, "Unexpected case found!");
+                        return null;
                 }
             }
 
