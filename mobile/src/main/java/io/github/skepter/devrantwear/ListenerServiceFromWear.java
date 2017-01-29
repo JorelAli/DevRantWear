@@ -150,7 +150,7 @@ class DataTask extends AsyncTask<Node, Void, Void> {
         dataMap.getDataMap().putString("rantContent", String.valueOf(contents[1]));
         if(contents[2] != null) {
             ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-            Bitmap img = (Bitmap) contents[2];
+            Bitmap img = Bitmap.createScaledBitmap((Bitmap) contents[2], 320, 320, false);
             img.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
             dataMap.getDataMap().putByteArray("bitmapImage", byteStream.toByteArray());
         } else {

@@ -39,12 +39,6 @@ public class MainActivityPhone extends AppCompatActivity implements
 
         Log.d("MainActivityPhone", "Application started!");
 
-        new DevRantAccessor().getRant();
-
-
-        //TODO Add some kind of feature to let the user login
-        //(Used to ++ and -- rants)
-
     }
 
     @Override

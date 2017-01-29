@@ -59,11 +59,6 @@ public class MainActivityWear extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        //Allows Networking? (This might be unnecessary for the wear class)
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         //TODO:
         //Add something to say "yeah we're connected" or "nah, dunno where that phone is at fam"
         //Loading spinny wheel icons?
@@ -236,7 +231,7 @@ public class MainActivityWear extends Activity implements
 
                 @Override
                 public int getColumnCount(int rowNum) {
-                    return 1;
+                    return 2;
                 }
             });
         }

@@ -21,14 +21,4 @@ public class Rant {
     String user_username;
     int user_score;
 
-//    public Rant(int id, String text, int num_upvotes, int num_downvotes, int score, long created_time, String attached_image, int num_comments, String[] tags) {
-//        this.id = id;
-//        this.text = text;
-//        this.num_upvotes = num_upvotes;
-//        this.num_downvotes = num_downvotes;
-//        this.score = score;
-//        this.created_time = created_time;
-//        this.attached_image = attached_image;
-//    }
-
 }
