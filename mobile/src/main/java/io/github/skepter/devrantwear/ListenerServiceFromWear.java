@@ -45,13 +45,6 @@ public class ListenerServiceFromWear extends WearableListenerService {
             Log.d(LOG_TAG, "Looking for rant...");
             Rant rant = getRantFromAccessor();
             sendToWatch(rant);
-            //String[] rant = getRandomRant();
-
-//            Log.d(LOG_TAG, "Found a rant!");
-//            Log.d(LOG_TAG, "Rant: " + Arrays.toString(rant));
-
-//            sendToWatch(rant);
-
         }
     }
 
@@ -71,39 +64,6 @@ public class ListenerServiceFromWear extends WearableListenerService {
     private Rant getRantFromAccessor() {
         return new DevRantAccessor().getRant();
     }
-
-    /**
-    Returns [rantID, rant]
-     */
-    @Deprecated
-    private String[] getRandomRant() {
-        HttpURLConnection connection;
-        InputStream inputStream;
-        String rantID = "";
-        String rantContent = "";
-
-        try {
-            // Create the URL and connection, get the input stream.
-            connection = (HttpURLConnection) new URL("https://www.devrant.io/api/devrant/rants/surprise?app=3").openConnection();
-            inputStream = connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream();
-            Scanner s = new Scanner(inputStream).useDelimiter("\\A");
-            String result = s.hasNext() ? s.next() : "";
-            s.close();
-            Log.d(LOG_TAG, "Rant received: " + result);
-
-            //Terrible parsing going on here (Use GSON FOR GOODNESS SAKE!!!)
-            rantID = result.substring(result.indexOf("\"id\":"), result.indexOf(",\"text")).substring(5);
-            rantContent = rantContent.replace("\\n", "\n");
-            rantContent = rantContent.replace("\\", "");
-            rantContent = result.substring(result.indexOf("text\":\""), result.indexOf("\",\"num_upvotes")).substring(7);
-
-            inputStream.close();
-            connection.disconnect();
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-        return new String[] {rantID, rantContent};
-    }
 }
 
 class DataTask extends AsyncTask<Node, Void, Void> {
@@ -120,6 +80,7 @@ class DataTask extends AsyncTask<Node, Void, Void> {
         PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
         dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
         dataMap.getDataMap().putString("rantContent", rant.getText());
+        dataMap.getDataMap().putString("rantUsername", rant.getUsername());
 
         PutDataRequest request = dataMap.asPutDataRequest();
 

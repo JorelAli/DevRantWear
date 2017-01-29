@@ -151,7 +151,7 @@ public class MainActivityWear extends Activity implements
                     case 0:
                         String title = "Rant ID: "+ contents[0];
                         //Testing to see if bold text renders properly in preparation for comment formatting
-                        String content = "<b>" + contents[1] + "</b>";
+                        String content = "<b>" + contents[2] + ": </b>" + contents[1];
                         return CardFragment.create(title, Html.fromHtml(content));
                     case 1:
                         return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
@@ -194,9 +194,10 @@ public class MainActivityWear extends Activity implements
                 DataMapItem dataItem = DataMapItem.fromDataItem(event.getDataItem());
                 String rantID = dataItem.getDataMap().getString("rantID");
                 String rantContent = dataItem.getDataMap().getString("rantContent");
+                String rantUsername = dataItem.getDataMap().getString("rantUsername");
 
 
-                String[] data = new String[] {rantID, rantContent};
+                String[] data = new String[] {rantID, rantContent, rantUsername};
                 displayCard(data);
 
             }

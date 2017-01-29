@@ -10,6 +10,7 @@ public class Rant {
 
     int id;
     String text;
+    String username;
 
     public int getId() {
         return id;
@@ -19,10 +20,15 @@ public class Rant {
         return text;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public Rant(JsonObject json) {
         JsonObject rant = json.get("rant").getAsJsonObject();
         id = rant.get("id").getAsInt();
         text = rant.get("text").getAsString();
+        username = rant.get("user_username").getAsString();
     }
 
 }
