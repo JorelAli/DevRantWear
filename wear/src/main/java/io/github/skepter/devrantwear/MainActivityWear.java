@@ -131,6 +131,7 @@ public class MainActivityWear extends Activity implements
     //displays the rant
     private void displayCard(String[] contents) {
         bar.setAlpha(0);
+
         /*
         Planned design for grid:
 

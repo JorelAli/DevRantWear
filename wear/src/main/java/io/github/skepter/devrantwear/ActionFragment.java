@@ -4,15 +4,17 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.wearable.view.CircledImageView;
+import android.support.wearable.view.DelayedConfirmationView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class ActionFragment extends Fragment implements View.OnClickListener {
+public class ActionFragment extends Fragment implements View.OnClickListener, DelayedConfirmationView.DelayedConfirmationListener {
 
     private static Listener mListener;
-    private CircledImageView vIcon;
+    private DelayedConfirmationView vIcon;
     private TextView vLabel;
 
     public static ActionFragment create(int iconResId, int labelResId, Listener listener) {
@@ -33,16 +35,31 @@ public class ActionFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        vIcon = (CircledImageView) view.findViewById(R.id.icon);
+        vIcon = (DelayedConfirmationView) view.findViewById(R.id.icon);
         vLabel = (TextView) view.findViewById(R.id.label);
         vIcon.setImageResource(getArguments().getInt("ICON"));
         vLabel.setText(getArguments().getInt("LABEL"));
+
+        vIcon.setListener(this);
         view.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        Log.d("ActionFragment", "Timer started!");
+        vIcon.setTotalTimeMs(10000);
+        vIcon.start();
         mListener.onActionPerformed();
+    }
+
+    @Override
+    public void onTimerFinished(View view) {
+        Log.d("ActionFragment", "Timer finished!");
+    }
+
+    @Override
+    public void onTimerSelected(View view) {
+        Log.d("ActionFragment", "Timer cancelled (pressed again)");
     }
 
     public interface Listener {
