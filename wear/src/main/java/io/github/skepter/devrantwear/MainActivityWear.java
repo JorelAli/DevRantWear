@@ -2,6 +2,7 @@ package io.github.skepter.devrantwear;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -46,7 +47,10 @@ public class MainActivityWear extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_wear);
-        Log.d(LOG_TAG, "Starting application!");
+
+
+
+        Log.d(LOG_TAG, "Starting MainActivityWear!");
 
         //Builds the Google API Client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
