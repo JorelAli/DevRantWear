@@ -11,6 +11,7 @@ import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.text.Html;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,6 +35,7 @@ public class MainActivityWear extends Activity implements
     private Node mNode;
     private GoogleApiClient mGoogleApiClient;
     private static final String WEAR_PATH = "/from-wear";
+    private ProgressBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,9 @@ public class MainActivityWear extends Activity implements
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        bar = (ProgressBar) findViewById(R.id.progressBar);
+        bar.setProgress(20);
 
         //TODO:
         //Add something to say "yeah we're connected" or "nah, dunno where that phone is at fam"
@@ -130,7 +135,7 @@ public class MainActivityWear extends Activity implements
 
     //displays the rant
     private void displayCard(String[] contents) {
-
+        bar.setAlpha(0);
         /*
         Planned design for grid:
 
