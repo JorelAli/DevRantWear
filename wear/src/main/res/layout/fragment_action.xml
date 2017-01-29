@@ -10,9 +10,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            tools:text="Get new rant"
+            android:id="@+id/label"
+            android:fontFamily="sans-serif-condensed-light"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/icon" />
 
         <android.support.wearable.view.CircledImageView
             android:id="@+id/icon"
@@ -22,17 +34,10 @@
             tools:src="@drawable/ic_full_action"
             app:circle_color="@color/action_button"
             app:circle_radius="52dp"
-            app:circle_border_width="0dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="170dp"
-            android:gravity="bottom|center"
-            tools:text="Get new rant"
-            android:id="@+id/label"
-            android:fontFamily="sans-serif-condensed-light"
-            android:textSize="20sp"
-            android:textColor="@color/white"/>
-    </FrameLayout>
+            app:circle_border_width="0dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+    </RelativeLayout>
 
 </LinearLayout>
