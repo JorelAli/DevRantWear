@@ -9,4 +9,11 @@ public class RawRant {
     boolean success;
     Rant rant;
 
+    public Rant getRant() {
+        return rant;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
 }

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
+import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.RawRant;
 
 import static android.R.attr.bitmap;
 import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
@@ -48,18 +49,20 @@ public class ListenerServiceFromWear extends WearableListenerService {
             Log.d(LOG_TAG, "Received message: " + data);
 
             Log.d(LOG_TAG, "Looking for rant...");
-            String[] rant = getRandomRant();
-
-            Log.d(LOG_TAG, "Found a rant!");
-            Log.d(LOG_TAG, "Rant: " + Arrays.toString(rant));
-
+            RawRant rant = getRantFromAccessor();
             sendToWatch(rant);
+            //String[] rant = getRandomRant();
+
+//            Log.d(LOG_TAG, "Found a rant!");
+//            Log.d(LOG_TAG, "Rant: " + Arrays.toString(rant));
+
+//            sendToWatch(rant);
 
         }
     }
 
-    private void sendToWatch(String[] contents) {
-        new DataTask(contents).execute();
+    private void sendToWatch(RawRant rant) {
+        new DataTask(rant).execute();
     }
 
     private void getComments(String rantID) {
@@ -71,9 +74,14 @@ public class ListenerServiceFromWear extends WearableListenerService {
         }
     }
 
+    private RawRant getRantFromAccessor() {
+        return new DevRantAccessor().getRant();
+    }
+
     /**
     Returns [rantID, rant]
      */
+    @Deprecated
     private String[] getRandomRant() {
         HttpURLConnection connection;
         InputStream inputStream;
@@ -106,18 +114,18 @@ public class ListenerServiceFromWear extends WearableListenerService {
 
 class DataTask extends AsyncTask<Node, Void, Void> {
 
-    private final String[] contents;
+    private final RawRant rant;
 
-    public DataTask (String[] contents) {
-        this.contents = contents;
+    public DataTask (RawRant rant) {
+        this.rant = rant;
     }
 
     @Override
     protected Void doInBackground(Node... nodes) {
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
-        dataMap.getDataMap().putString("rantID", String.valueOf(contents[0]));
-        dataMap.getDataMap().putString("rantContent", String.valueOf(contents[1]));
+        dataMap.getDataMap().putString("rantID", String.valueOf(rant.getRant().getId()));
+        dataMap.getDataMap().putString("rantContent", rant.getRant().getText());
 
         PutDataRequest request = dataMap.asPutDataRequest();
 

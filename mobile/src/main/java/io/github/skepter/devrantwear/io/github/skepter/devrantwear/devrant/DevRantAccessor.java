@@ -28,10 +28,6 @@ public class DevRantAccessor {
 
     public RawRant getRant() {
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         HttpURLConnection connection;
         InputStream inputStream;
         try {
