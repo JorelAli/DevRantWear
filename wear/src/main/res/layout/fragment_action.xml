@@ -10,24 +10,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.wearable.view.CircledImageView
-        android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        tools:src="@drawable/ic_full_action"
-        app:circle_color="@color/action_button"
-        app:circle_radius="52dp"
-        app:circle_border_width="0dp"/>
-
-    <TextView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        tools:text="Cancel"
-        android:id="@+id/label"
-        android:fontFamily="sans-serif-condensed-light"
-        android:textSize="20sp"
-        android:textColor="@color/white"/>
+        android:layout_height="match_parent">
+
+        <android.support.wearable.view.CircledImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:src="@drawable/ic_full_action"
+            app:circle_color="@color/action_button"
+            app:circle_radius="52dp"
+            app:circle_border_width="0dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:gravity="bottom|center"
+            tools:text="Get new rant"
+            android:id="@+id/label"
+            android:fontFamily="sans-serif-condensed-light"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
+    </FrameLayout>
 
 </LinearLayout>
