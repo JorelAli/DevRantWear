@@ -1,5 +1,6 @@
 package io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant;
 
+import android.os.StrictMode;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -24,23 +25,29 @@ not compatible with Android (unfortunately).
 public class DevRantAccessor {
 
 
-    public void getRant() {
+    public RawRant getRant() {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                .permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         HttpURLConnection connection;
         InputStream inputStream;
         try {
+            Log.d("DevRantAccessor", "Retrieving rant...");
             connection = (HttpURLConnection) new URL("https://www.devrant.io/api/devrant/rants/surprise?app=3").openConnection();
             inputStream = connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream();
             Scanner s = new Scanner(inputStream).useDelimiter("\\A");
             String result = s.hasNext() ? s.next() : "";
             s.close();
+            Log.d("DevRantAccessor", "Received rant: " + result);
 
             Gson gson = new Gson();
-            RawRant rawRant = gson.fromJson(result, RawRant.class);
-            Log.d("DevRantAccessor", rawRant.rant.text);
-
+            return gson.fromJson(result, RawRant.class);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
+        return null;
 
     }
 

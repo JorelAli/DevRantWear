@@ -93,9 +93,6 @@ public class ListenerServiceFromWear extends WearableListenerService {
     }
 
     private Object[] getRandomRant() {
-
-        new DevRantAccessor().getRant();
-
         HttpURLConnection connection;
         InputStream inputStream;
         String rantID = "";

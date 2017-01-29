@@ -5,11 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Wearable;
+
+import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
+import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.RawRant;
 
 public class MainActivityPhone extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -32,6 +36,11 @@ public class MainActivityPhone extends AppCompatActivity implements
                 .build();
 
         googleApiClient.connect();
+
+        Log.d("MainActivityPhone", "Application started!");
+
+        new DevRantAccessor().getRant();
+
 
         //TODO Add some kind of feature to let the user login
         //(Used to ++ and -- rants)
