@@ -10,7 +10,11 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
+
+import java.util.Arrays;
+import java.util.List;
 
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.RawRant;
@@ -21,6 +25,8 @@ public class MainActivityPhone extends AppCompatActivity implements
 
     public static GoogleApiClient googleApiClient;
     public static Context myContext;
+
+    public final static String TAG = "MainActivityPhone";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +43,47 @@ public class MainActivityPhone extends AppCompatActivity implements
 
         googleApiClient.connect();
 
-        Log.d("MainActivityPhone", "Application started!");
+        Log.d(TAG, "Application started!");
+    }
 
+    private void check(final GoogleApiClient client) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Node> connectedNodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await().getNodes();
+                if(connectedNodes.size() == 0) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView t = (TextView) findViewById(R.id.textView);
+                            t.setText("No devices found D:");
+                        }
+                    });
+                    return;
+                }
+                for(final Node node : connectedNodes) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView t = (TextView) findViewById(R.id.textView);
+                            t.setText("Connected to device: " + node.getDisplayName());
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        TextView t = (TextView) findViewById(R.id.textView);
-        t.setText("We are connected :D");
+        check(googleApiClient);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 }
