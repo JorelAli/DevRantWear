@@ -34,21 +34,10 @@ public class DevRantAccessor {
             Log.d("DevRantAccessor", "Retrieving rant...");
             connection = (HttpURLConnection) new URL("https://www.devrant.io/api/devrant/rants/surprise?app=3").openConnection();
             inputStream = connection.getResponseCode() == 200 ? connection.getInputStream() : connection.getErrorStream();
-//            Scanner s = new Scanner(inputStream).useDelimiter("\\A");
-//            String result = s.hasNext() ? s.next() : "";
-//            s.close();
-//            Log.d("DevRantAccessor", "Received raw rant: " + result);
             JsonObject json = (new JsonParser().parse(new InputStreamReader(inputStream))).getAsJsonObject();
             inputStream.close();
             connection.disconnect();
             return new Rant(json);
-
-//            result = result.replaceAll("\n", "\n");
-//            result = result.replaceAll("\\\\", "");
-//            Log.d("DevRantAccessor", "Parsed rant: " + result);
-
-//            Gson gson = new Gson();
-//            return gson.fromJson(result, RawRant.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,7 +45,7 @@ public class DevRantAccessor {
 
     }
 
-    public void getComments(int rantID) {
+    public JsonObject getComments(int rantID) {
         HttpURLConnection connection;
         InputStream inputStream;
         try {
@@ -65,9 +54,11 @@ public class DevRantAccessor {
             JsonObject json = (new JsonParser().parse(new InputStreamReader(inputStream))).getAsJsonObject();
             inputStream.close();
             connection.disconnect();
+            return json;
         } catch(Exception e) {
-
+            e.printStackTrace();
         }
+        return null;
     }
 
 
