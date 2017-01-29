@@ -22,6 +22,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
+
 import static android.R.attr.bitmap;
 import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
 
@@ -91,6 +93,9 @@ public class ListenerServiceFromWear extends WearableListenerService {
     }
 
     private Object[] getRandomRant() {
+
+        new DevRantAccessor().getRant();
+
         HttpURLConnection connection;
         InputStream inputStream;
         String rantID = "";
