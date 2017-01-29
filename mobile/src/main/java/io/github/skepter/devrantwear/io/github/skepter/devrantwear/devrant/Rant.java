@@ -11,9 +11,14 @@ public class Rant {
     int id;
     String text;
     String username;
+    boolean image;
 
     public int getId() {
         return id;
+    }
+
+    public boolean hasImage() {
+        return image;
     }
 
     public String getText() {
@@ -29,6 +34,7 @@ public class Rant {
         id = rant.get("id").getAsInt();
         text = rant.get("text").getAsString();
         username = rant.get("user_username").getAsString();
+        image = rant.get("attached_image").isJsonObject();
     }
 
 }

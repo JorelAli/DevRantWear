@@ -39,8 +39,9 @@ public class DevRantAccessor {
             JsonObject json = (new JsonParser().parse(new InputStreamReader(inputStream))).getAsJsonObject();
             inputStream.close();
             connection.disconnect();
-            //TODO Check if rant has image. If so, run this method again.
-
+            if(new Rant(json).hasImage()) {
+                return getRant();
+            }
             return new Rant(json);
         } catch (Exception e) {
             e.printStackTrace();
