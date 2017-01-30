@@ -230,8 +230,9 @@ public class MainActivityWear extends Activity implements
                 DataMapItem dataItem = DataMapItem.fromDataItem(event.getDataItem());
 
                 if(dataItem.getDataMap().getBoolean("networkDead")) {
-                    Toast.makeText(getApplicationContext(), "Phone can't connect/n to network :(", Toast.LENGTH_SHORT).show();
-                    //cancel everything - don't show rant. Show network dead icon + text
+                    Toast.makeText(getApplicationContext(), "Phone can't connect\n to network :(", Toast.LENGTH_SHORT).show();
+
+                    //cancel everything - don't show rant. Show network dead icon + text?
                 } else {
                     String rantID = dataItem.getDataMap().getString("rantID");
                     String rantContent = dataItem.getDataMap().getString("rantContent");
