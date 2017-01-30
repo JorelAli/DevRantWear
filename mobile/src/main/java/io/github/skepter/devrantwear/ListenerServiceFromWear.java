@@ -39,6 +39,12 @@ public class ListenerServiceFromWear extends WearableListenerService {
         super.onMessageReceived(messageEvent);
         Log.d(LOG_TAG, "I received a message!");
 
+        if(googleApiClient == null) {
+            Intent intent = new Intent(this, MainActivityPhone.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+
 
         if(messageEvent.getPath().equals(WEARPATH)) {
             String data = new String(messageEvent.getData());
@@ -70,13 +76,8 @@ public class ListenerServiceFromWear extends WearableListenerService {
                 dataMap.getDataMap().putBoolean("hasComments", false);
             }
 
-
-
+            
             PutDataRequest request = dataMap.asPutDataRequest();
-
-            if(googleApiClient == null) {
-
-            }
 
             DataApi.DataItemResult dataItemResult = Wearable.DataApi
                     .putDataItem(googleApiClient, request).await();
