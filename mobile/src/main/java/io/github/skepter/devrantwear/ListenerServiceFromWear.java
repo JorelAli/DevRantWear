@@ -1,22 +1,14 @@
 package io.github.skepter.devrantwear;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Scanner;
 
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.Comment;
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
@@ -76,7 +68,7 @@ public class ListenerServiceFromWear extends WearableListenerService {
                 dataMap.getDataMap().putBoolean("hasComments", false);
             }
 
-            
+
             PutDataRequest request = dataMap.asPutDataRequest();
 
             DataApi.DataItemResult dataItemResult = Wearable.DataApi

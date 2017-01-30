@@ -3,7 +3,6 @@ package io.github.skepter.devrantwear;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.wearable.view.CircledImageView;
 import android.support.wearable.view.DelayedConfirmationView;
 import android.util.Log;
 import android.view.LayoutInflater;
