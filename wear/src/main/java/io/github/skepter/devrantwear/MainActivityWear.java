@@ -186,7 +186,7 @@ public class MainActivityWear extends Activity implements
                         for(int i = 0; i < commentIDs.length; i++) {
                             builder.append("<b>" + commentIDs[i] + ": </b>");
                             builder.append(commentBodys[i]);
-                            builder.append("\n\n");
+                            builder.append("<br><br>");
                         }
                         return CardFragment.create("Comments", Html.fromHtml(builder.toString()));
                     case 2:

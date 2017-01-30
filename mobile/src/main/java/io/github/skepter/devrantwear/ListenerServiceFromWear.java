@@ -1,5 +1,6 @@
 package io.github.skepter.devrantwear;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -46,55 +47,43 @@ public class ListenerServiceFromWear extends WearableListenerService {
             Log.d(LOG_TAG, "Looking for rant...");
             Rant rant = new DevRantAccessor().getRant();
             Comment[] comments = new DevRantAccessor().getComments(rant.getId());
-            new DataTask(rant, comments).execute();
-        }
-    }
 
-}
-
-class DataTask extends AsyncTask<Node, Void, Void> {
-
-    private final Rant rant;
-    private final Comment[] comments;
-
-    public DataTask (Rant rant, Comment[] comments) {
-        this.rant = rant;
-        this.comments = comments;
-    }
-
-    @Override
-    protected Void doInBackground(Node... nodes) {
-
-        PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
-        //Add rant info
-        dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
-        dataMap.getDataMap().putString("rantContent", rant.getText());
-        dataMap.getDataMap().putString("rantUsername", rant.getUsername());
-        //Add comment info
-        if(comments.length != 0) {
-            String[] commentIDs = new String[comments.length];
-            String[] commentBodys = new String[comments.length];
-            int i = 0;
-            for(Comment c : comments) {
-                commentIDs[i] = c.getUsername();
-                commentBodys[i] = c.getText();
-                i++;
+            PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
+            //Add rant info
+            dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
+            dataMap.getDataMap().putString("rantContent", rant.getText());
+            dataMap.getDataMap().putString("rantUsername", rant.getUsername());
+            //Add comment info
+            if(comments.length != 0) {
+                String[] commentIDs = new String[comments.length];
+                String[] commentBodys = new String[comments.length];
+                int i = 0;
+                for(Comment c : comments) {
+                    commentIDs[i] = c.getUsername();
+                    commentBodys[i] = c.getText();
+                    i++;
+                }
+                dataMap.getDataMap().putStringArray("commentIDs", commentIDs);
+                dataMap.getDataMap().putStringArray("commentBodys", commentBodys);
+                dataMap.getDataMap().putBoolean("hasComments", true);
+            } else {
+                dataMap.getDataMap().putBoolean("hasComments", false);
             }
-            dataMap.getDataMap().putStringArray("commentIDs", commentIDs);
-            dataMap.getDataMap().putStringArray("commentBodys", commentBodys);
-            dataMap.getDataMap().putBoolean("hasComments", true);
-        } else {
-            dataMap.getDataMap().putBoolean("hasComments", false);
+
+
+
+            PutDataRequest request = dataMap.asPutDataRequest();
+
+            if(googleApiClient == null) {
+
+            }
+
+            DataApi.DataItemResult dataItemResult = Wearable.DataApi
+                    .putDataItem(googleApiClient, request).await();
+
+            Log.d (ListenerServiceFromWear.LOG_TAG, dataItemResult.getStatus().getStatusMessage());
+
         }
-
-
-
-        PutDataRequest request = dataMap.asPutDataRequest();
-
-        DataApi.DataItemResult dataItemResult = Wearable.DataApi
-                .putDataItem(googleApiClient, request).await();
-
-        Log.d (ListenerServiceFromWear.LOG_TAG, dataItemResult.getStatus().getStatusMessage());
-        return null;
     }
+
 }
