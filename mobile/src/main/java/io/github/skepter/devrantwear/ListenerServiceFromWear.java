@@ -1,5 +1,8 @@
 package io.github.skepter.devrantwear;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -48,45 +51,59 @@ public class ListenerServiceFromWear extends WearableListenerService implements
             googleApiClient.connect();
         }
 
-        if(messageEvent.getPath().equals(WEARPATH)) {
-            String data = new String(messageEvent.getData());
-            Log.d(LOG_TAG, "Received message: " + data);
 
-            Log.d(LOG_TAG, "Looking for rant...");
-            Rant rant = new DevRantAccessor().getRant();
-            Comment[] comments = new DevRantAccessor().getComments(rant.getId());
+        if(messageEvent.getPath().equals(WEARPATH)) {
+            Log.d(LOG_TAG, "Received message: " + new String(messageEvent.getData()));
 
             PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
-            //Add rant info
-            dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
-            dataMap.getDataMap().putString("rantContent", rant.getText());
-            dataMap.getDataMap().putString("rantUsername", rant.getUsername());
-            //Add comment info
-            if(comments.length != 0) {
-                String[] commentIDs = new String[comments.length];
-                String[] commentBodys = new String[comments.length];
-                int i = 0;
-                for(Comment c : comments) {
-                    commentIDs[i] = c.getUsername();
-                    commentBodys[i] = c.getText();
-                    i++;
+
+            if(isNetworkAvailable()) {
+                Log.d(LOG_TAG, "Looking for rant...");
+                Rant rant = new DevRantAccessor().getRant();
+                Comment[] comments = new DevRantAccessor().getComments(rant.getId());
+
+                dataMap.getDataMap().putBoolean("networkDead", false);
+
+                //Add rant info
+                dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
+                dataMap.getDataMap().putString("rantContent", rant.getText());
+                dataMap.getDataMap().putString("rantUsername", rant.getUsername());
+
+                //Add comment info
+                if(comments.length != 0) {
+                    String[] commentIDs = new String[comments.length];
+                    String[] commentBodys = new String[comments.length];
+                    int i = 0;
+                    for(Comment c : comments) {
+                        commentIDs[i] = c.getUsername();
+                        commentBodys[i] = c.getText();
+                        i++;
+                    }
+                    dataMap.getDataMap().putStringArray("commentIDs", commentIDs);
+                    dataMap.getDataMap().putStringArray("commentBodys", commentBodys);
+                    dataMap.getDataMap().putBoolean("hasComments", true);
+                } else {
+                    dataMap.getDataMap().putBoolean("hasComments", false);
                 }
-                dataMap.getDataMap().putStringArray("commentIDs", commentIDs);
-                dataMap.getDataMap().putStringArray("commentBodys", commentBodys);
-                dataMap.getDataMap().putBoolean("hasComments", true);
             } else {
-                dataMap.getDataMap().putBoolean("hasComments", false);
+                Log.d(LOG_TAG, "Network dead. Not worth finding rant.");
+                dataMap.getDataMap().putBoolean("networkDead", true);
             }
 
-
+            //Send rant to watch
             PutDataRequest request = dataMap.asPutDataRequest();
-
             DataApi.DataItemResult dataItemResult = Wearable.DataApi
                     .putDataItem(googleApiClient, request).await();
 
             Log.d (ListenerServiceFromWear.LOG_TAG, dataItemResult.getStatus().getStatusMessage());
-
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 
     @Override

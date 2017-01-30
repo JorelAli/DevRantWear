@@ -11,6 +11,7 @@ import android.support.wearable.view.GridViewPager;
 import android.text.Html;
 import android.util.Log;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -227,16 +228,22 @@ public class MainActivityWear extends Activity implements
             if (eventUri.contains ("/wear-path")) {
 
                 DataMapItem dataItem = DataMapItem.fromDataItem(event.getDataItem());
-                String rantID = dataItem.getDataMap().getString("rantID");
-                String rantContent = dataItem.getDataMap().getString("rantContent");
-                String rantUsername = dataItem.getDataMap().getString("rantUsername");
 
-                if(dataItem.getDataMap().getBoolean("hasComments")) {
-                    String[] commentIDs = dataItem.getDataMap().getStringArray("commentIDs");
-                    String[] commentBodys = dataItem.getDataMap().getStringArray("commentBodys");
-                    displayCard(rantID, rantContent, rantUsername, commentIDs, commentBodys);
+                if(dataItem.getDataMap().getBoolean("networkDead")) {
+                    Toast.makeText(getApplicationContext(), "Phone can't connect/n to network :(", Toast.LENGTH_SHORT).show();
+                    //cancel everything - don't show rant. Show network dead icon + text
                 } else {
-                    displayCard(rantID, rantContent, rantUsername);
+                    String rantID = dataItem.getDataMap().getString("rantID");
+                    String rantContent = dataItem.getDataMap().getString("rantContent");
+                    String rantUsername = dataItem.getDataMap().getString("rantUsername");
+
+                    if(dataItem.getDataMap().getBoolean("hasComments")) {
+                        String[] commentIDs = dataItem.getDataMap().getStringArray("commentIDs");
+                        String[] commentBodys = dataItem.getDataMap().getStringArray("commentBodys");
+                        displayCard(rantID, rantContent, rantUsername, commentIDs, commentBodys);
+                    } else {
+                        displayCard(rantID, rantContent, rantUsername);
+                    }
                 }
             }
         }
