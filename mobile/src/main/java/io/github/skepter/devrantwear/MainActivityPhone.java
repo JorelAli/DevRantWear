@@ -1,6 +1,8 @@
 package io.github.skepter.devrantwear;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +27,13 @@ public class MainActivityPhone extends AppCompatActivity implements
 
     public final static String TAG = "MainActivityPhone";
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +50,7 @@ public class MainActivityPhone extends AppCompatActivity implements
         googleApiClient.connect();
 
         Log.d(TAG, "Application started!");
+        Log.d(TAG, "Network status: " + (isNetworkAvailable() ? "Good" : "Potato"));
     }
 
     private void check(final GoogleApiClient client) {
