@@ -59,6 +59,7 @@ public class ListenerServiceFromWear extends WearableListenerService implements
 
             if(isNetworkAvailable()) {
                 Log.d(LOG_TAG, "Looking for rant...");
+                //Prefetch rants?
                 Rant rant = new DevRantAccessor().getRant();
                 Comment[] comments = new DevRantAccessor().getComments(rant.getId());
 

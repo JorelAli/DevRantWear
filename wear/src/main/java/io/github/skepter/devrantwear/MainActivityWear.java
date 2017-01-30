@@ -128,6 +128,20 @@ public class MainActivityWear extends Activity implements
         mGoogleApiClient.disconnect();
     }
 
+    /*
+    TODO:
+    Wrist flick gesture to retrieve new rant
+    Prefetching rants into a Queue (LinkedList)
+
+    Queue<String> myQueue = new LinkedList<String>();
+    Queue<Integer> myNumbers = new LinkedList<Integer>();
+    myQueue.add("Hello");
+    myQueue.add("World");
+    myNumbers.add(1); <<-- Adds 1 to the end of the queue
+    myNumbers.add(2);
+    myNumbers.remove() <<-- Gets the first element and removed it
+     */
+
     //displays the rant
     private void displayCard(final String rantID, final String contents, final String username) {
         bar.setAlpha(0);
