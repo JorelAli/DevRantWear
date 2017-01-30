@@ -18,9 +18,9 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.util.List;
 
-public class MainActivityPhone extends AppCompatActivity implements
+public class MainActivityPhone extends AppCompatActivity /*implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener */{
 
     public static GoogleApiClient googleApiClient;
     public static Context myContext;
@@ -37,9 +37,10 @@ public class MainActivityPhone extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_phone);
+        //setContentView(R.layout.activity_main_phone);
 
         myContext = this.getApplicationContext();
+
 
 //        googleApiClient = new GoogleApiClient.Builder(this)
 //                .addConnectionCallbacks(this)
@@ -51,47 +52,48 @@ public class MainActivityPhone extends AppCompatActivity implements
 
         Log.d(TAG, "Application started!");
         Log.d(TAG, "Network status: " + (isNetworkAvailable() ? "Good" : "Potato"));
+        finish();
     }
-
-    private void check(final GoogleApiClient client) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Node> connectedNodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await().getNodes();
-                if(connectedNodes.size() == 0) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView t = (TextView) findViewById(R.id.textView);
-                            t.setText("No devices found D:");
-                        }
-                    });
-                    return;
-                }
-                for(final Node node : connectedNodes) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView t = (TextView) findViewById(R.id.textView);
-                            t.setText("Connected to device: " + node.getDisplayName());
-                        }
-                    });
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        check(googleApiClient);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-    }
+//
+//    private void check(final GoogleApiClient client) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                List<Node> connectedNodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await().getNodes();
+//                if(connectedNodes.size() == 0) {
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            TextView t = (TextView) findViewById(R.id.textView);
+//                            t.setText("No devices found D:");
+//                        }
+//                    });
+//                    return;
+//                }
+//                for(final Node node : connectedNodes) {
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            TextView t = (TextView) findViewById(R.id.textView);
+//                            t.setText("Connected to device: " + node.getDisplayName());
+//                        }
+//                    });
+//                }
+//            }
+//        }).start();
+//    }
+//
+//    @Override
+//    public void onConnected(@Nullable Bundle bundle) {
+//        check(googleApiClient);
+//    }
+//
+//    @Override
+//    public void onConnectionSuspended(int i) {
+//    }
+//
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//    }
 
 }

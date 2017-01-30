@@ -128,7 +128,7 @@ public class MainActivityWear extends Activity implements
     }
 
     //displays the rant
-    private void displayCard(String rantID, String contents, String username) {
+    private void displayCard(final String rantID, final String contents, final String username) {
         bar.setAlpha(0);
 
         GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
@@ -167,7 +167,7 @@ public class MainActivityWear extends Activity implements
         });
     }
 
-    private void displayCard(String rantID, String contents, String username, String[] commentIDs, String[] commentBodys) {
+    private void displayCard(final String rantID, final String contents, final String username, final String[] commentIDs, final String[] commentBodys) {
         bar.setAlpha(0);
 
         GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);

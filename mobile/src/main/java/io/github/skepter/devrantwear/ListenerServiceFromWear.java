@@ -48,7 +48,7 @@ public class ListenerServiceFromWear extends WearableListenerService implements
 
             googleApiClient.connect();
         }
-        
+
         if(messageEvent.getPath().equals(WEARPATH)) {
             String data = new String(messageEvent.getData());
             Log.d(LOG_TAG, "Received message: " + data);
