@@ -1,6 +1,5 @@
 package io.github.skepter.devrantwear;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +19,6 @@ import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.Comme
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.Rant;
 
-import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
 
 /**
  * Created by Jorel on 24/01/2017.
@@ -30,6 +28,7 @@ public class ListenerServiceFromWear extends WearableListenerService implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    public static GoogleApiClient googleApiClient;
     public static final String LOG_TAG = "DevRantWear (Device)";
 
     private static final String WEARPATH = "/from-wear";
@@ -92,7 +91,31 @@ public class ListenerServiceFromWear extends WearableListenerService implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                List<Node> connectedNodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await().getNodes();
+//                if(connectedNodes.size() == 0) {
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            TextView t = (TextView) findViewById(R.id.textView);
+//                            t.setText("No devices found D:");
+//                        }
+//                    });
+//                    return;
+//                }
+//                for(final Node node : connectedNodes) {
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            TextView t = (TextView) findViewById(R.id.textView);
+//                            t.setText("Connected to device: " + node.getDisplayName());
+//                        }
+//                    });
+//                }
+//            }
+//        }).start();
     }
 
     @Override
