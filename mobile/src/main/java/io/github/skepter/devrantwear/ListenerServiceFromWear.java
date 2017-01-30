@@ -1,8 +1,14 @@
 package io.github.skepter.devrantwear;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.PutDataMapRequest;
@@ -20,7 +26,9 @@ import static io.github.skepter.devrantwear.MainActivityPhone.googleApiClient;
  * Created by Jorel on 24/01/2017.
  */
 
-public class ListenerServiceFromWear extends WearableListenerService {
+public class ListenerServiceFromWear extends WearableListenerService implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     public static final String LOG_TAG = "DevRantWear (Device)";
 
@@ -32,12 +40,15 @@ public class ListenerServiceFromWear extends WearableListenerService {
         Log.d(LOG_TAG, "I received a message!");
 
         if(googleApiClient == null) {
-            Intent intent = new Intent(this, MainActivityPhone.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(Wearable.API)
+                    .addApi(AppIndex.API).build();
+
+            googleApiClient.connect();
         }
-
-
+        
         if(messageEvent.getPath().equals(WEARPATH)) {
             String data = new String(messageEvent.getData());
             Log.d(LOG_TAG, "Received message: " + data);
@@ -79,4 +90,18 @@ public class ListenerServiceFromWear extends WearableListenerService {
         }
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }

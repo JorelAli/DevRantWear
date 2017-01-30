@@ -40,14 +40,14 @@ public class MainActivityPhone extends AppCompatActivity implements
         setContentView(R.layout.activity_main_phone);
 
         myContext = this.getApplicationContext();
-        
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Wearable.API)
-                .addApi(AppIndex.API).build();
 
-        googleApiClient.connect();
+//        googleApiClient = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .addApi(Wearable.API)
+//                .addApi(AppIndex.API).build();
+//
+//        googleApiClient.connect();
 
         Log.d(TAG, "Application started!");
         Log.d(TAG, "Network status: " + (isNetworkAvailable() ? "Good" : "Potato"));
