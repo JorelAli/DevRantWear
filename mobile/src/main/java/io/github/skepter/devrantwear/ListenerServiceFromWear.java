@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
+import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.Comment;
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.DevRantAccessor;
 import io.github.skepter.devrantwear.io.github.skepter.devrantwear.devrant.Rant;
 
@@ -43,35 +44,50 @@ public class ListenerServiceFromWear extends WearableListenerService {
             Log.d(LOG_TAG, "Received message: " + data);
 
             Log.d(LOG_TAG, "Looking for rant...");
-            Rant rant = getRantFromAccessor();
-            sendToWatch(rant);
+            Rant rant = new DevRantAccessor().getRant();
+            Comment[] comments = new DevRantAccessor().getComments(rant.getId());
+            new DataTask(rant, comments).execute();
         }
     }
 
-    private void sendToWatch(Rant rant) {
-        new DataTask(rant).execute();
-    }
-
-    private Rant getRantFromAccessor() {
-        return new DevRantAccessor().getRant();
-    }
 }
 
 class DataTask extends AsyncTask<Node, Void, Void> {
 
     private final Rant rant;
+    private final Comment[] comments;
 
-    public DataTask (Rant rant) {
+    public DataTask (Rant rant, Comment[] comments) {
         this.rant = rant;
+        this.comments = comments;
     }
 
     @Override
     protected Void doInBackground(Node... nodes) {
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/wear-path");
+        //Add rant info
         dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
         dataMap.getDataMap().putString("rantContent", rant.getText());
         dataMap.getDataMap().putString("rantUsername", rant.getUsername());
+        //Add comment info
+        if(comments.length != 0) {
+            String[] commentIDs = new String[comments.length];
+            String[] commentBodys = new String[comments.length];
+            int i = 0;
+            for(Comment c : comments) {
+                commentIDs[i] = c.getUsername();
+                commentBodys[i] = c.getText();
+                i++;
+            }
+            dataMap.getDataMap().putStringArray("commentIDs", commentIDs);
+            dataMap.getDataMap().putStringArray("commentBodys", commentBodys);
+            dataMap.getDataMap().putBoolean("hasComments", true);
+        } else {
+            dataMap.getDataMap().putBoolean("hasComments", false);
+        }
+
+
 
         PutDataRequest request = dataMap.asPutDataRequest();
 
