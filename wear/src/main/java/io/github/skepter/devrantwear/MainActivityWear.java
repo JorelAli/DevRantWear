@@ -129,18 +129,8 @@ public class MainActivityWear extends Activity implements
     }
 
     //displays the rant
-    private void displayCard(String[] contents) {
+    private void displayCard(String rantID, String contents, String username) {
         bar.setAlpha(0);
-
-        /*
-        Planned design for grid:
-
-        [rant] [Comments] [+ button to request new rant]
-               [Comments]
-               [Comments]
-               [Comments]
-         */
-
 
         GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
         gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
@@ -148,9 +138,9 @@ public class MainActivityWear extends Activity implements
             public Fragment getFragment(int row, int col) {
                 switch(col) {
                     case 0:
-                        String title = "Rant ID: "+ contents[0];
+                        String title = "Rant ID: "+ rantID;
                         //Testing to see if bold text renders properly in preparation for comment formatting
-                        String content = "<b>" + contents[2] + ": </b>" + contents[1];
+                        String content = "<b>" + username + ": </b>" + contents;
                         return CardFragment.create(title, Html.fromHtml(content));
                     case 1:
                         return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
@@ -176,9 +166,53 @@ public class MainActivityWear extends Activity implements
                 return 2;
             }
         });
+    }
 
+    private void displayCard(String rantID, String contents, String username, String[] commentIDs, String[] commentBodys) {
+        bar.setAlpha(0);
 
+        GridViewPager gridViewPager = (GridViewPager) findViewById(R.id.gridViewPager);
+        gridViewPager.setAdapter(new FragmentGridPagerAdapter(getFragmentManager()) {
+            @Override
+            public Fragment getFragment(int row, int col) {
+                switch(col) {
+                    case 0:
+                        String title = "Rant ID: "+ rantID;
+                        //Testing to see if bold text renders properly in preparation for comment formatting
+                        String content = "<b>" + username + ": </b>" + contents;
+                        return CardFragment.create(title, Html.fromHtml(content));
+                    case 1:
+                        StringBuilder builder = new StringBuilder("");
+                        for(int i = 0; i < commentIDs.length; i++) {
+                            builder.append("<b>" + commentIDs[i] + ": </b>");
+                            builder.append(commentBodys[i]);
+                            builder.append("\n\n");
+                        }
+                        return CardFragment.create("Comments", Html.fromHtml(builder.toString()));
+                    case 2:
+                        return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
+                            @Override
+                            public void onActionPerformed() {
+                                requestRandomRant();
+                            }
+                        });
+                    default:
+                        //This case should never occur.
+                        Log.d(LOG_TAG, "Unexpected case found!");
+                        return null;
+                }
+            }
 
+            @Override
+            public int getRowCount() {
+                return 1;
+            }
+
+            @Override
+            public int getColumnCount(int rowNum) {
+                return 3;
+            }
+        });
     }
 
     @Override
@@ -195,12 +229,17 @@ public class MainActivityWear extends Activity implements
                 String rantContent = dataItem.getDataMap().getString("rantContent");
                 String rantUsername = dataItem.getDataMap().getString("rantUsername");
 
-
-                String[] data = new String[] {rantID, rantContent, rantUsername};
-                displayCard(data);
-
+                if(dataItem.getDataMap().getBoolean("hasComments")) {
+                    String[] commentIDs = dataItem.getDataMap().getStringArray("commentIDs");
+                    String[] commentBodys = dataItem.getDataMap().getStringArray("commentBodys");
+                    displayCard(rantID, rantContent, rantUsername, commentIDs, commentBodys);
+                } else {
+                    displayCard(rantID, rantContent, rantUsername);
+                }
             }
         }
     }
+
+
 }
 
