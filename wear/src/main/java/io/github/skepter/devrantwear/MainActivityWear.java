@@ -42,7 +42,7 @@ public class MainActivityWear extends Activity implements
     private static final String WEAR_PATH = "/from-wear";
     private ProgressBar bar;
     private Queue<Rant> rantsQueue;
-
+    private boolean isLoading = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +88,14 @@ public class MainActivityWear extends Activity implements
 
     private boolean nextRant() {
         boolean handled = true;
-        requestRandomRant();
+        displayNextRant();
         return handled;
     }
 
     private void displayNextRant() {
+        if(rantsQueue.size() == 0) {
+            requestRandomRant();
+        }
         Rant rant = rantsQueue.remove();
         if(rant.hasComments) {
             displayCard(rant.rantID, rant.rantContent, rant.username, rant.commentIDs, rant.commentBodys);
@@ -171,20 +174,6 @@ public class MainActivityWear extends Activity implements
         super.onStop();
         mGoogleApiClient.disconnect();
     }
-
-    /*
-    TODO:
-    Wrist flick gesture to retrieve new rant
-    Prefetching rants into a Queue (LinkedList)
-
-    Queue<String> myQueue = new LinkedList<String>();
-    Queue<Integer> myNumbers = new LinkedList<Integer>();
-    myQueue.add("Hello");
-    myQueue.add("World");
-    myNumbers.add(1); <<-- Adds 1 to the end of the queue
-    myNumbers.add(2);
-    myNumbers.remove() <<-- Gets the first element and removed it
-     */
 
     //displays the rant
     private void displayCard(final String rantID, final String contents, final String username) {
@@ -293,6 +282,10 @@ public class MainActivityWear extends Activity implements
                     //cancel everything - don't show rant. Show network dead icon + text?
                 } else {
                     addRantToQueue(new Rant(dataItem));
+                    if(isLoading) {
+                        isLoading = false;
+                        displayNextRant();
+                    }
 //                    String rantID = dataItem.getDataMap().getString("rantID");
 //                    String rantContent = dataItem.getDataMap().getString("rantContent");
 //                    String rantUsername = dataItem.getDataMap().getString("rantUsername");

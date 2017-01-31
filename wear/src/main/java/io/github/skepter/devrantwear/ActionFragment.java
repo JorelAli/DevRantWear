@@ -53,14 +53,10 @@ public class ActionFragment extends Fragment implements View.OnClickListener, De
 
     @Override
     public void onTimerFinished(View view) {
-        Log.d("ActionFragment", "Timer finished!");
-        vIcon.setTotalTimeMs(1000);
-        vIcon.start();
     }
 
     @Override
     public void onTimerSelected(View view) {
-        Log.d("ActionFragment", "Timer cancelled (pressed again)");
     }
 
     public interface Listener {
