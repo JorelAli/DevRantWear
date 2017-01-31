@@ -103,7 +103,7 @@ public class ListenerServiceFromWear extends WearableListenerService implements
             DataApi.DataItemResult dataItemResult = Wearable.DataApi
                     .putDataItem(googleApiClient, request).await();
 
-            Log.d (ListenerServiceFromWear.LOG_TAG, dataItemResult.getStatus().getStatusMessage());
+            Log.d (ListenerServiceFromWear.LOG_TAG, "Sending message status: " + dataItemResult.getStatus().getStatusMessage());
         }
     }
 

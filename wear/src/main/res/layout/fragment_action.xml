@@ -27,7 +27,7 @@
             android:layout_below="@+id/icon"
             android:layout_alignParentBottom="true" />
 
-        <android.support.wearable.view.DelayedConfirmationView
+        <android.support.wearable.view.CircledImageView
             android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,8 +35,6 @@
             tools:src="@drawable/ic_full_action"
             app:circle_color="@color/action_button"
             app:circle_radius="60dp"
-            app:circle_border_width="8dp"
-            app:circle_border_color="#4187ff"
             android:layout_marginTop="20dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />

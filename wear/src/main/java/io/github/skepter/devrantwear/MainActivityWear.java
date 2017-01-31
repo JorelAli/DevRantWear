@@ -285,15 +285,12 @@ public class MainActivityWear extends Activity implements
             if (eventUri.contains ("/wear-path")) {
 
                 DataMapItem dataItem = DataMapItem.fromDataItem(event.getDataItem());
-                Log.d(LOG_TAG, "Received data!");
                 if(dataItem.getDataMap().getBoolean("networkDead")) {
                     Log.d(LOG_TAG, "Network dead message received");
-                    //Toast.makeText(getApplicationContext(), "Phone can't connect\n to network :(", Toast.LENGTH_SHORT).show();
                     findViewById(R.id.gridViewPager).setAlpha(0);
                     bar.setAlpha(0);
                     findViewById(R.id.imageView).setAlpha(1);
                     findViewById(R.id.textView).setAlpha(1);
-
                     return;
                 } else {
                     addRantToQueue(new Rant(dataItem));

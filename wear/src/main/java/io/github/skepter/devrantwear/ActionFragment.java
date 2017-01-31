@@ -4,13 +4,12 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.wearable.view.DelayedConfirmationView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class ActionFragment extends Fragment implements View.OnClickListener, DelayedConfirmationView.DelayedConfirmationListener {
+public class ActionFragment extends Fragment implements View.OnClickListener {
 
     private static Listener mListener;
     private DelayedConfirmationView vIcon;
@@ -38,25 +37,12 @@ public class ActionFragment extends Fragment implements View.OnClickListener, De
         vLabel = (TextView) view.findViewById(R.id.label);
         vIcon.setImageResource(getArguments().getInt("ICON"));
         vLabel.setText(getArguments().getInt("LABEL"));
-
-        vIcon.setListener(this);
         view.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        Log.d("ActionFragment", "Timer started!");
-        vIcon.setTotalTimeMs(1000);
-        vIcon.start();
         mListener.onActionPerformed();
-    }
-
-    @Override
-    public void onTimerFinished(View view) {
-    }
-
-    @Override
-    public void onTimerSelected(View view) {
     }
 
     public interface Listener {
