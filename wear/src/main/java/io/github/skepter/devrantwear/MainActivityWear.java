@@ -42,7 +42,7 @@ public class MainActivityWear extends Activity implements
     private static final String WEAR_PATH = "/from-wear";
     private ProgressBar bar;
     private Queue<Rant> rantsQueue;
-    private boolean isLoading = true;
+    private boolean displayRantOnReceive = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +94,10 @@ public class MainActivityWear extends Activity implements
 
     private void displayNextRant() {
         if(rantsQueue.size() == 0) {
+            bar.setAlpha(1);
             requestRandomRant();
+            displayRantOnReceive = true;
+            return;
         }
         Rant rant = rantsQueue.remove();
         if(rant.hasComments) {
@@ -282,21 +285,10 @@ public class MainActivityWear extends Activity implements
                     //cancel everything - don't show rant. Show network dead icon + text?
                 } else {
                     addRantToQueue(new Rant(dataItem));
-                    if(isLoading) {
-                        isLoading = false;
+                    if(displayRantOnReceive) {
+                        displayRantOnReceive = false;
                         displayNextRant();
                     }
-//                    String rantID = dataItem.getDataMap().getString("rantID");
-//                    String rantContent = dataItem.getDataMap().getString("rantContent");
-//                    String rantUsername = dataItem.getDataMap().getString("rantUsername");
-//                    boolean hasComments = dataItem.getDataMap().getBoolean("hasComments");
-//                    if(hasComments) {
-//                        String[] commentIDs = dataItem.getDataMap().getStringArray("commentIDs");
-//                        String[] commentBodys = dataItem.getDataMap().getStringArray("commentBodys");
-//                        displayCard(rantID, rantContent, rantUsername, commentIDs, commentBodys);
-//                    } else {
-//                        displayCard(rantID, rantContent, rantUsername);
-//                    }
                 }
             }
         }
