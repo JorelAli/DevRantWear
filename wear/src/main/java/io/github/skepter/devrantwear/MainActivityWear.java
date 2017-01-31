@@ -25,27 +25,32 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class MainActivityWear extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         DataApi.DataListener {
 
     public static final String LOG_TAG = "DevRantWear (Wear)";
+    private static final int MAX_RANT_QUEUE = 10;
 
     private Node mNode;
     private GoogleApiClient mGoogleApiClient;
     private static final String WEAR_PATH = "/from-wear";
     private ProgressBar bar;
+    private Queue<Rant> rantsQueue;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         setContentView(R.layout.activity_main_wear);
-
-
-
         Log.d(LOG_TAG, "Starting MainActivityWear!");
+
+        rantsQueue = new LinkedList<Rant>();
 
         //Builds the Google API Client
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -58,6 +63,18 @@ public class MainActivityWear extends Activity implements
         bar = (ProgressBar) findViewById(R.id.progressBar);
         bar.setProgress(20);
 
+    }
+
+    private void addRantToQueue(Rant rant) {
+        if(rantsQueue.size() != MAX_RANT_QUEUE) {
+            rantsQueue.add(rant);
+        } else {
+            //Discard rant :(
+        }
+    }
+
+    private Rant getRantFromQueue() {
+        return rantsQueue.remove();
     }
 
     @Override
@@ -251,14 +268,15 @@ public class MainActivityWear extends Activity implements
                     String rantID = dataItem.getDataMap().getString("rantID");
                     String rantContent = dataItem.getDataMap().getString("rantContent");
                     String rantUsername = dataItem.getDataMap().getString("rantUsername");
-
-                    if(dataItem.getDataMap().getBoolean("hasComments")) {
+                    boolean hasComments = dataItem.getDataMap().getBoolean("hasComments");
+                    if(hasComments) {
                         String[] commentIDs = dataItem.getDataMap().getStringArray("commentIDs");
                         String[] commentBodys = dataItem.getDataMap().getStringArray("commentBodys");
                         displayCard(rantID, rantContent, rantUsername, commentIDs, commentBodys);
                     } else {
                         displayCard(rantID, rantContent, rantUsername);
                     }
+                    new Rant(rantID, rantContent, rantUsername, hasComments);
                 }
             }
         }
