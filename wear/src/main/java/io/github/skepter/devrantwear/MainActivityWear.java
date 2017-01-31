@@ -49,6 +49,7 @@ public class MainActivityWear extends Activity implements
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         setContentView(R.layout.activity_main_wear);
+
         Log.d(LOG_TAG, "Starting MainActivityWear!");
 
         rantsQueue = new LinkedList<Rant>();
@@ -191,7 +192,9 @@ public class MainActivityWear extends Activity implements
                         String title = "Rant ID: "+ rantID;
                         //Testing to see if bold text renders properly in preparation for comment formatting
                         String content = "<b>" + username + ": </b>" + contents;
-                        return CardFragment.create(title, Html.fromHtml(content));
+                        CardFragment card = CardFragment.create(title, Html.fromHtml(content));
+                        card.setExpansionFactor(20.0F);
+                        return card;
                     case 1:
                         return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
                             @Override
@@ -241,7 +244,9 @@ public class MainActivityWear extends Activity implements
                             }
                         }
 
-                        return CardFragment.create("Comments", Html.fromHtml(builder.toString()));
+                        CardFragment card = CardFragment.create("Comments", Html.fromHtml(builder.toString()));
+                        card.setExpansionFactor(20.0F);
+                        return card;
                     case 2:
                         return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
                             @Override
