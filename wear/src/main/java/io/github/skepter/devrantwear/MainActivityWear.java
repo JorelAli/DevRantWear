@@ -44,6 +44,11 @@ public class MainActivityWear extends Activity implements
     private Queue<Rant> rantsQueue;
     private boolean displayRantOnReceive = true;
 
+    /*
+    TODO:
+    https://developer.android.com/training/wearables/apps/always-on.html#EnableAmbient
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
