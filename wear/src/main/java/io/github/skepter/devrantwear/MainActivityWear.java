@@ -63,7 +63,9 @@ public class MainActivityWear extends Activity implements
 
         //This code might be unnecessary - but you know, it works with this... dunno if it works without
         bar = (ProgressBar) findViewById(R.id.progressBar);
-        bar.setProgress(20);
+        //bar.setProgress(20);
+        findViewById(R.id.imageView).setAlpha(0);
+        findViewById(R.id.textView).setAlpha(0);
 
     }
 
@@ -283,11 +285,16 @@ public class MainActivityWear extends Activity implements
             if (eventUri.contains ("/wear-path")) {
 
                 DataMapItem dataItem = DataMapItem.fromDataItem(event.getDataItem());
-
+                Log.d(LOG_TAG, "Received data!");
                 if(dataItem.getDataMap().getBoolean("networkDead")) {
-                    Toast.makeText(getApplicationContext(), "Phone can't connect\n to network :(", Toast.LENGTH_SHORT).show();
+                    Log.d(LOG_TAG, "Network dead message received");
+                    //Toast.makeText(getApplicationContext(), "Phone can't connect\n to network :(", Toast.LENGTH_SHORT).show();
+                    findViewById(R.id.gridViewPager).setAlpha(0);
+                    bar.setAlpha(0);
+                    findViewById(R.id.imageView).setAlpha(1);
+                    findViewById(R.id.textView).setAlpha(1);
 
-                    //cancel everything - don't show rant. Show network dead icon + text?
+                    return;
                 } else {
                     addRantToQueue(new Rant(dataItem));
                     if(displayRantOnReceive) {
@@ -298,7 +305,5 @@ public class MainActivityWear extends Activity implements
             }
         }
     }
-
-
 }
 

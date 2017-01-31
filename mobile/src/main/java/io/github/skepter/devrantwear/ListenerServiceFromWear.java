@@ -61,31 +61,38 @@ public class ListenerServiceFromWear extends WearableListenerService implements
                 Log.d(LOG_TAG, "Looking for rant...");
                 //Prefetch rants?
                 Rant rant = new DevRantAccessor().getRant();
-                Comment[] comments = new DevRantAccessor().getComments(rant.getId());
+                if(rant != null) {
+                    Comment[] comments = new DevRantAccessor().getComments(rant.getId());
 
-                dataMap.getDataMap().putBoolean("networkDead", false);
+                    dataMap.getDataMap().putBoolean("networkDead", false);
 
-                //Add rant info
-                dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
-                dataMap.getDataMap().putString("rantContent", rant.getText());
-                dataMap.getDataMap().putString("rantUsername", rant.getUsername());
+                    //Add rant info
+                    dataMap.getDataMap().putString("rantID", String.valueOf(rant.getId()));
+                    dataMap.getDataMap().putString("rantContent", rant.getText());
+                    dataMap.getDataMap().putString("rantUsername", rant.getUsername());
 
-                //Add comment info
-                if(comments.length != 0) {
-                    String[] commentIDs = new String[comments.length];
-                    String[] commentBodys = new String[comments.length];
-                    int i = 0;
-                    for(Comment c : comments) {
-                        commentIDs[i] = c.getUsername();
-                        commentBodys[i] = c.getText();
-                        i++;
+                    //Add comment info
+                    if(comments.length != 0) {
+                        String[] commentIDs = new String[comments.length];
+                        String[] commentBodys = new String[comments.length];
+                        int i = 0;
+                        for(Comment c : comments) {
+                            commentIDs[i] = c.getUsername();
+                            commentBodys[i] = c.getText();
+                            i++;
+                        }
+                        dataMap.getDataMap().putStringArray("commentIDs", commentIDs);
+                        dataMap.getDataMap().putStringArray("commentBodys", commentBodys);
+                        dataMap.getDataMap().putBoolean("hasComments", true);
+                    } else {
+                        dataMap.getDataMap().putBoolean("hasComments", false);
                     }
-                    dataMap.getDataMap().putStringArray("commentIDs", commentIDs);
-                    dataMap.getDataMap().putStringArray("commentBodys", commentBodys);
-                    dataMap.getDataMap().putBoolean("hasComments", true);
                 } else {
-                    dataMap.getDataMap().putBoolean("hasComments", false);
+                    //Couldn't access devRant - couldn't access devRant
+                    Log.d(LOG_TAG, "Couldn't access devRant");
+                    dataMap.getDataMap().putBoolean("networkDead", true);
                 }
+
             } else {
                 Log.d(LOG_TAG, "Network dead. Not worth finding rant.");
                 dataMap.getDataMap().putBoolean("networkDead", true);

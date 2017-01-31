@@ -23,4 +23,22 @@
         android:layout_height="match_parent"
         android:id="@+id/progressBar" />
 
+    <ImageView
+        android:src="@drawable/ic_full_sad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:cropToPadding="false"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30dp" />
+
+    <TextView
+        android:text="Could not\nconnect to devRant\n(Check phone network)"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:gravity="center" />
+
 </android.support.wearable.view.BoxInsetLayout>

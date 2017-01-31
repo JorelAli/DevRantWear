@@ -7,10 +7,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 /**
  * Created by Jorel on 28/01/2017.
@@ -43,7 +46,11 @@ public class DevRantAccessor {
                 return getRant();
             }
             return new Rant(json);
-        } catch (Exception e) {
+        } catch (UnknownHostException e) {
+            return null;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -69,7 +76,11 @@ public class DevRantAccessor {
                 i++;
             }
             return commentArray;
-        } catch(Exception e) {
+        } catch(UnknownHostException e) {
+            return null;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
