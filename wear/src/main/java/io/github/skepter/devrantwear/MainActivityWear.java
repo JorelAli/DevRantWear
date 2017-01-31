@@ -10,6 +10,7 @@ import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.text.Html;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -73,8 +74,32 @@ public class MainActivityWear extends Activity implements
         }
     }
 
-    private Rant getRantFromQueue() {
-        return rantsQueue.remove();
+    @Override /* KeyEvent.Callback */
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_NAVIGATE_NEXT:
+                return nextRant();
+            case KeyEvent.KEYCODE_NAVIGATE_PREVIOUS:
+                return nextRant();
+        }
+        // If you did not handle it, let it be handled by the next possible element as deemed by the Activity.
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private boolean nextRant() {
+        boolean handled = true;
+        requestRandomRant();
+        return handled;
+    }
+
+    private void displayNextRant() {
+        Rant rant = rantsQueue.remove();
+        if(rant.hasComments) {
+            displayCard(rant.rantID, rant.rantContent, rant.username, rant.commentIDs, rant.commentBodys);
+        } else {
+            displayCard(rant.rantID, rant.rantContent, rant.username);
+        }
+        requestRandomRant();
     }
 
     @Override
@@ -91,7 +116,9 @@ public class MainActivityWear extends Activity implements
                                 //The name of the device connected (phone's Identifier)
                                 mNode = node;
                                 Log.d(LOG_TAG, "Connected to " + mNode.getDisplayName());
-                                requestRandomRant();
+                                for(int i = 0; i < MAX_RANT_QUEUE; i++) {
+                                    requestRandomRant();
+                                }
                             }
                         }
                         if(mNode == null) {
@@ -177,7 +204,7 @@ public class MainActivityWear extends Activity implements
                         return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
                             @Override
                             public void onActionPerformed() {
-                                requestRandomRant();
+                                displayNextRant();
                             }
                         });
                     default:
@@ -227,7 +254,7 @@ public class MainActivityWear extends Activity implements
                         return ActionFragment.create(R.drawable.ic_full_action, R.string.new_rant, new ActionFragment.Listener() {
                             @Override
                             public void onActionPerformed() {
-                                requestRandomRant();
+                                displayNextRant();
                             }
                         });
                     default:
@@ -265,18 +292,18 @@ public class MainActivityWear extends Activity implements
 
                     //cancel everything - don't show rant. Show network dead icon + text?
                 } else {
-                    String rantID = dataItem.getDataMap().getString("rantID");
-                    String rantContent = dataItem.getDataMap().getString("rantContent");
-                    String rantUsername = dataItem.getDataMap().getString("rantUsername");
-                    boolean hasComments = dataItem.getDataMap().getBoolean("hasComments");
-                    if(hasComments) {
-                        String[] commentIDs = dataItem.getDataMap().getStringArray("commentIDs");
-                        String[] commentBodys = dataItem.getDataMap().getStringArray("commentBodys");
-                        displayCard(rantID, rantContent, rantUsername, commentIDs, commentBodys);
-                    } else {
-                        displayCard(rantID, rantContent, rantUsername);
-                    }
-                    new Rant(rantID, rantContent, rantUsername, hasComments);
+                    addRantToQueue(new Rant(dataItem));
+//                    String rantID = dataItem.getDataMap().getString("rantID");
+//                    String rantContent = dataItem.getDataMap().getString("rantContent");
+//                    String rantUsername = dataItem.getDataMap().getString("rantUsername");
+//                    boolean hasComments = dataItem.getDataMap().getBoolean("hasComments");
+//                    if(hasComments) {
+//                        String[] commentIDs = dataItem.getDataMap().getStringArray("commentIDs");
+//                        String[] commentBodys = dataItem.getDataMap().getStringArray("commentBodys");
+//                        displayCard(rantID, rantContent, rantUsername, commentIDs, commentBodys);
+//                    } else {
+//                        displayCard(rantID, rantContent, rantUsername);
+//                    }
                 }
             }
         }
