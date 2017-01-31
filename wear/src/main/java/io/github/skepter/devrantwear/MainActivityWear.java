@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
@@ -29,7 +30,7 @@ import com.google.android.gms.wearable.Wearable;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class MainActivityWear extends Activity implements
+public class MainActivityWear extends WearableActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         DataApi.DataListener {
@@ -43,11 +44,6 @@ public class MainActivityWear extends Activity implements
     private ProgressBar bar;
     private Queue<Rant> rantsQueue;
     private boolean displayRantOnReceive = true;
-
-    /*
-    TODO:
-    https://developer.android.com/training/wearables/apps/always-on.html#EnableAmbient
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
