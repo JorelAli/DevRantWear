@@ -1,5 +1,5 @@
 # devRantWear
-An android smartwatch application to view rants from https://www.devrant.io/
+An android smartwatch application to view rants from https://www.devrant.com/
 
 What it does
 ============
